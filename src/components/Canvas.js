@@ -6,8 +6,10 @@ class Canvas extends Component {
     super(props);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
-    this.onTouchMove = this.onTouchMove.bind(this);
     this.endPaintEvent = this.endPaintEvent.bind(this);
+    //mobile
+    this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchStart= this.onTouchStart.bind(this);
     this.pusher = new Pusher('b37e8b05f23c407c454e', {
       cluster: 'us2',
     });
@@ -29,27 +31,40 @@ class Canvas extends Component {
   onMouseMove({ nativeEvent }) {
     if (this.isPainting) {
       const { offsetX, offsetY } = nativeEvent;
+      console.log("?", nativeEvent);
       const offSetData = { offsetX, offsetY };
       // Set the start and stop position of the paint event.
       const positionData = {
         start: { ...this.prevPos },
         stop: { ...offSetData },
       };
+      console.log("what", positionData);
       // Add the position to the line array
       this.line = this.line.concat(positionData);
       this.paint(this.prevPos, offSetData, this.userStrokeStyle);
     }
   }
-
+  //mobile
+  onTouchStart({ nativeEvent}) {
+    // e.preventDefault();
+    const { offsetX, offsetY } = nativeEvent;
+    this.isPainting = true;
+    this.prevPos = { offsetX, offsetY };
+  }
   onTouchMove({ nativeEvent }) {
+    // e.preventDefault();
+    console.log("ontouchmove");
+    console.log(">", this.isPainting);
     if (this.isPainting) {
       const { offsetX, offsetY } = nativeEvent;
+      console.log(">?>?>?>", nativeEvent.touches);
       const offSetData = { offsetX, offsetY };
       // Set the start and stop position of the paint event.
       const positionData = {
         start: { ...this.prevPos },
         stop: { ...offSetData },
       };
+      console.log(">??", positionData);
       // Add the position to the line array
       this.line = this.line.concat(positionData);
       this.paint(this.prevPos, offSetData, this.userStrokeStyle);
@@ -77,6 +92,10 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
+    // Prevent scrolling when touching the canvas
+    this.canvas.addEventListener('touchmove', e => {
+      e.preventDefault();
+    });
     // Here we set up the properties of the canvas element. 
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
@@ -93,10 +112,13 @@ class Canvas extends Component {
         ref={(ref) => (this.canvas = ref)}
         style={{ background: 'blue' }}
         onMouseDown={this.onMouseDown}
-        onTouchMove={this.onTouchMove}
         onMouseLeave={this.endPaintEvent}
         onMouseUp={this.endPaintEvent}
         onMouseMove={this.onMouseMove}
+
+        onTouchStart={this.onTouchStart}
+        onTouchMove={this.onTouchMove}
+        // onTouchEnd={this.endPaintEvent}
       />
     );
   }
