@@ -8,8 +8,8 @@ class Canvas extends Component {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.endPaintEvent = this.endPaintEvent.bind(this);
     //mobile
-    this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchStart= this.onTouchStart.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
     this.pusher = new Pusher('b37e8b05f23c407c454e', {
       cluster: 'us2',
     });
@@ -18,27 +18,37 @@ class Canvas extends Component {
   isPainting = false;
   // Different stroke styles to be used for user and guest
   userStrokeStyle = '#000';
-  // guestStrokeStyle = '#F0C987';
   line = [];
-  prevPos = { offsetX: 0, offsetY: 0 };
+  prevPos = { clientX: 0, clientY: 0 };
+
+  // getMousePos(target) {
+  //   const rect = this.canvas.getBoundingClientRect();
+  //   this.prevPos.clientX -= rect.left;
+  //   this.prevPos.clientY -= rect.top;
+  // }
 
   onMouseDown({ nativeEvent }) {
-    const { offsetX, offsetY } = nativeEvent;
+    const { clientX, clientY } = nativeEvent;
     this.isPainting = true;
-    this.prevPos = { offsetX, offsetY };
+    this.prevPos = { clientX, clientY };
+    const rect = this.canvas.getBoundingClientRect();
+    this.prevPos.clientX -= rect.left;
+    this.prevPos.clientY -= rect.top;
   }
 
   onMouseMove({ nativeEvent }) {
     if (this.isPainting) {
-      const { offsetX, offsetY } = nativeEvent;
+      const { clientX, clientY } = nativeEvent;
       console.log("?", nativeEvent);
-      const offSetData = { offsetX, offsetY };
+      const offSetData = { clientX, clientY };
+      const rect = this.canvas.getBoundingClientRect();
+      offSetData.clientX -= rect.left;
+      offSetData.clientY -= rect.top;
       // Set the start and stop position of the paint event.
       const positionData = {
         start: { ...this.prevPos },
         stop: { ...offSetData },
       };
-      console.log("what", positionData);
       // Add the position to the line array
       this.line = this.line.concat(positionData);
       this.paint(this.prevPos, offSetData, this.userStrokeStyle);
@@ -46,25 +56,26 @@ class Canvas extends Component {
   }
   //mobile
   onTouchStart({ nativeEvent}) {
-    // e.preventDefault();
-    const { offsetX, offsetY } = nativeEvent;
+    const { clientX, clientY } = nativeEvent.touches[0];
     this.isPainting = true;
-    this.prevPos = { offsetX, offsetY };
+    this.prevPos = { clientX, clientY };
+    const rect = this.canvas.getBoundingClientRect();
+    this.prevPos.clientX -= rect.left;
+    this.prevPos.clientY -= rect.top;
   }
   onTouchMove({ nativeEvent }) {
     // e.preventDefault();
-    console.log("ontouchmove");
-    console.log(">", this.isPainting);
     if (this.isPainting) {
-      const { offsetX, offsetY } = nativeEvent;
-      console.log(">?>?>?>", nativeEvent.touches);
-      const offSetData = { offsetX, offsetY };
+      const { clientX, clientY } = nativeEvent.touches[0];
+      const offSetData = { clientX, clientY };
+      const rect = this.canvas.getBoundingClientRect();
+      offSetData.clientX -= rect.left;
+      offSetData.clientY -= rect.top;
       // Set the start and stop position of the paint event.
       const positionData = {
         start: { ...this.prevPos },
         stop: { ...offSetData },
       };
-      console.log(">??", positionData);
       // Add the position to the line array
       this.line = this.line.concat(positionData);
       this.paint(this.prevPos, offSetData, this.userStrokeStyle);
@@ -77,22 +88,22 @@ class Canvas extends Component {
     }
   }
   paint(prevPos, currPos, strokeStyle) {
-    const { offsetX, offsetY } = currPos;
-    const { offsetX: x, offsetY: y } = prevPos;
+    const { clientX, clientY } = currPos;
+    const { clientX: x, clientY: y } = prevPos;
 
     this.ctx.beginPath();
     this.ctx.strokeStyle = strokeStyle;
     // Move the the prevPosition of the mouse
     this.ctx.moveTo(x, y);
     // Draw a line to the current position of the mouse
-    this.ctx.lineTo(offsetX, offsetY);
+    this.ctx.lineTo(clientX, clientY);
     // Visualize the line using the strokeStyle
     this.ctx.stroke();
-    this.prevPos = { offsetX, offsetY };
+    this.prevPos = { clientX, clientY };
   }
 
   componentDidMount() {
-    // Prevent scrolling when touching the canvas
+    // Prevent scrolling when touching the canvas: mobile
     this.canvas.addEventListener('touchmove', e => {
       e.preventDefault();
     });
@@ -118,7 +129,7 @@ class Canvas extends Component {
 
         onTouchStart={this.onTouchStart}
         onTouchMove={this.onTouchMove}
-        // onTouchEnd={this.endPaintEvent}
+        onTouchEnd={this.endPaintEvent}
       />
     );
   }
