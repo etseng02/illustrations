@@ -37,13 +37,17 @@ function App() {
 
   function createRoom(){
     let roomCode = generateRandomString()
+    socket.on('connection', function(socket){
+      socket.join(roomCode);
+    });
+    socket.emit('createRoom', { roomID: `${roomCode}` });
     setState({ ...state, hostMachine: true, roomID: roomCode })
   }
 
   useEffect(() => {
     socket.on('news', function (data) {
       console.log(data);
-      socket.emit('my other event', { my: 'data' });
+      socket.emit('my other event', { client: 'connected' });
     });
   })
   
