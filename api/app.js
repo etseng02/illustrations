@@ -43,6 +43,7 @@ app.use(function(err, req, res, next) {
 //   socket.on('my other event', function (data) {
 //     console.log(data);
 //   });
+const db = require("./db");
 
 const rooms = require("./routes/create_room")
 var app = require('express')();
