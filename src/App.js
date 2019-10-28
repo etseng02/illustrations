@@ -25,7 +25,7 @@ function App() {
   return (
     <Fragment>
 
-      {!state.roomID && 
+      {!state.roomID && !state.hostMachine &&//When roomID is falsy, Join room field, name field, and create room field will be rendered
         <Fragment>
           <JoinRoom
             onClick={enterRoom}
@@ -37,7 +37,7 @@ function App() {
        </Fragment>
       }
 
-      {state.roomID && 
+      {state.roomID && !state.hostMachine && //
       <Fragment>
         <h3 style={{ textAlign: 'center' }}>Draw</h3>
         <Canvas />
