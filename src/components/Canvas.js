@@ -6,8 +6,10 @@ class Canvas extends Component {
     super(props);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
-    this.onTouchMove = this.onTouchMove.bind(this);
     this.endPaintEvent = this.endPaintEvent.bind(this);
+    //mobile
+    this.onTouchStart= this.onTouchStart.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
     this.pusher = new Pusher('b37e8b05f23c407c454e', {
       cluster: 'us2',
     });
@@ -16,20 +18,32 @@ class Canvas extends Component {
   isPainting = false;
   // Different stroke styles to be used for user and guest
   userStrokeStyle = '#000';
-  // guestStrokeStyle = '#F0C987';
   line = [];
-  prevPos = { offsetX: 0, offsetY: 0 };
+  prevPos = { clientX: 0, clientY: 0 };
+
+  // getMousePos(target) {
+  //   const rect = this.canvas.getBoundingClientRect();
+  //   this.prevPos.clientX -= rect.left;
+  //   this.prevPos.clientY -= rect.top;
+  // }
 
   onMouseDown({ nativeEvent }) {
-    const { offsetX, offsetY } = nativeEvent;
+    const { clientX, clientY } = nativeEvent;
     this.isPainting = true;
-    this.prevPos = { offsetX, offsetY };
+    this.prevPos = { clientX, clientY };
+    const rect = this.canvas.getBoundingClientRect();
+    this.prevPos.clientX -= rect.left;
+    this.prevPos.clientY -= rect.top;
   }
 
   onMouseMove({ nativeEvent }) {
     if (this.isPainting) {
-      const { offsetX, offsetY } = nativeEvent;
-      const offSetData = { offsetX, offsetY };
+      const { clientX, clientY } = nativeEvent;
+      console.log("?", nativeEvent);
+      const offSetData = { clientX, clientY };
+      const rect = this.canvas.getBoundingClientRect();
+      offSetData.clientX -= rect.left;
+      offSetData.clientY -= rect.top;
       // Set the start and stop position of the paint event.
       const positionData = {
         start: { ...this.prevPos },
@@ -40,11 +54,23 @@ class Canvas extends Component {
       this.paint(this.prevPos, offSetData, this.userStrokeStyle);
     }
   }
-
+  //mobile
+  onTouchStart({ nativeEvent}) {
+    const { clientX, clientY } = nativeEvent.touches[0];
+    this.isPainting = true;
+    this.prevPos = { clientX, clientY };
+    const rect = this.canvas.getBoundingClientRect();
+    this.prevPos.clientX -= rect.left;
+    this.prevPos.clientY -= rect.top;
+  }
   onTouchMove({ nativeEvent }) {
+    // e.preventDefault();
     if (this.isPainting) {
-      const { offsetX, offsetY } = nativeEvent;
-      const offSetData = { offsetX, offsetY };
+      const { clientX, clientY } = nativeEvent.touches[0];
+      const offSetData = { clientX, clientY };
+      const rect = this.canvas.getBoundingClientRect();
+      offSetData.clientX -= rect.left;
+      offSetData.clientY -= rect.top;
       // Set the start and stop position of the paint event.
       const positionData = {
         start: { ...this.prevPos },
@@ -62,21 +88,25 @@ class Canvas extends Component {
     }
   }
   paint(prevPos, currPos, strokeStyle) {
-    const { offsetX, offsetY } = currPos;
-    const { offsetX: x, offsetY: y } = prevPos;
+    const { clientX, clientY } = currPos;
+    const { clientX: x, clientY: y } = prevPos;
 
     this.ctx.beginPath();
     this.ctx.strokeStyle = strokeStyle;
     // Move the the prevPosition of the mouse
     this.ctx.moveTo(x, y);
     // Draw a line to the current position of the mouse
-    this.ctx.lineTo(offsetX, offsetY);
+    this.ctx.lineTo(clientX, clientY);
     // Visualize the line using the strokeStyle
     this.ctx.stroke();
-    this.prevPos = { offsetX, offsetY };
+    this.prevPos = { clientX, clientY };
   }
 
   componentDidMount() {
+    // Prevent scrolling when touching the canvas: mobile
+    this.canvas.addEventListener('touchmove', e => {
+      e.preventDefault();
+    });
     // Here we set up the properties of the canvas element. 
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
@@ -93,10 +123,13 @@ class Canvas extends Component {
         ref={(ref) => (this.canvas = ref)}
         style={{ background: 'blue' }}
         onMouseDown={this.onMouseDown}
-        onTouchMove={this.onTouchMove}
         onMouseLeave={this.endPaintEvent}
         onMouseUp={this.endPaintEvent}
         onMouseMove={this.onMouseMove}
+
+        onTouchStart={this.onTouchStart}
+        onTouchMove={this.onTouchMove}
+        onTouchEnd={this.endPaintEvent}
       />
     );
   }
