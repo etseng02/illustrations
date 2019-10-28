@@ -40,7 +40,7 @@ function App() {
     socket.on('connection', function(socket){
       socket.join(roomCode);
     });
-    socket.emit('createRoom', { roomID: `${roomCode}` });
+    socket.emit('createRoom', { roomCode: `${roomCode}` });
     setState({ ...state, hostMachine: true, roomID: roomCode })
   }
 
