@@ -18,7 +18,7 @@ module.exports = db => {
       INSERT INTO rooms (code)
       VALUES 
         ($1)
-    `, [request.code])
+    `, [request.roomCode])
   });
 
   return router;

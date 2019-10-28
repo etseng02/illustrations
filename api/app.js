@@ -61,7 +61,7 @@ io.on('connection', function (socket) {
   socket.on('createRoom', function (data) {
     console.log(data);
     // put call to database here
-
+    rooms(db, data.roomCode)
     
   });
 });
