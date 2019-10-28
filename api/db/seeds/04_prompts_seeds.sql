@@ -12,5 +12,9 @@ VALUES ('Karl', 1, 1),
 
 INSERT INTO prompts (info, game_id)
 VALUES (
-  '{ "players" : [1, 2, 3], "drawings" : [], "guesses": [] }', 1
+  '{ "word": "cat", "players" : [1, 2, 3], "drawings" : [], "guesses": [] }', 1
+), (
+  '{ "word": "dog", "players" : [2, 3, 1], "drawings" : [], "guesses": [] }', 1
+), (
+  '{ "word": "BURD", "players" : [3, 1, 2], "drawings" : [], "guesses": [] }', 1
 );
