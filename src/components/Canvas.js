@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Pusher from 'pusher-js';
 
 class Canvas extends Component {
@@ -7,6 +7,7 @@ class Canvas extends Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.endPaintEvent = this.endPaintEvent.bind(this);
+    this.convertToBlob = this.convertToBlob.bind(this);
     //mobile
     this.onTouchStart= this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
@@ -39,7 +40,6 @@ class Canvas extends Component {
   onMouseMove({ nativeEvent }) {
     if (this.isPainting) {
       const { clientX, clientY } = nativeEvent;
-      console.log("?", nativeEvent);
       const offSetData = { clientX, clientY };
       const rect = this.canvas.getBoundingClientRect();
       offSetData.clientX -= rect.left;
@@ -102,6 +102,16 @@ class Canvas extends Component {
     this.prevPos = { clientX, clientY };
   }
 
+
+  convertToBlob() {
+    let img = new Image();
+    this.canvas.toBlob(function(blob) {
+      const blobURL = URL.createObjectURL(blob);
+      img.src = blobURL;
+      document.body.appendChild(img);
+    }, "image/png", 0.75);
+  }
+
   componentDidMount() {
     // Prevent scrolling when touching the canvas: mobile
     this.canvas.addEventListener('touchmove', e => {
@@ -114,23 +124,39 @@ class Canvas extends Component {
     this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';
     this.ctx.lineWidth = 5;
+    
+    //time limit for converting canvas to image
+    // setTimeout(() => {
+    //   let img = new Image();
+    //   this.canvas.toBlob(function(blob) {
+    //     const blobURL = URL.createObjectURL(blob);
+    //     img.src = blobURL;
+    //     document.body.appendChild(img);
+    //   }, "image/png", 0.75);
+    // }, 5000);
   }
 
   render() {
     return (
-      <canvas
-      // We use the ref attribute to get direct access to the canvas element. 
-        ref={(ref) => (this.canvas = ref)}
-        style={{ background: 'blue' }}
-        onMouseDown={this.onMouseDown}
-        onMouseLeave={this.endPaintEvent}
-        onMouseUp={this.endPaintEvent}
-        onMouseMove={this.onMouseMove}
+      <Fragment>
+        <button
+          onClick={this.convertToBlob}>
+            what
+        </button>
+        <canvas
+        // We use the ref attribute to get direct access to the canvas element. 
+          ref={(ref) => (this.canvas = ref)}
+          style={{ background: 'blue' }}
+          onMouseDown={this.onMouseDown}
+          onMouseLeave={this.endPaintEvent}
+          onMouseUp={this.endPaintEvent}
+          onMouseMove={this.onMouseMove}
 
-        onTouchStart={this.onTouchStart}
-        onTouchMove={this.onTouchMove}
-        onTouchEnd={this.endPaintEvent}
-      />
+          onTouchStart={this.onTouchStart}
+          onTouchMove={this.onTouchMove}
+          onTouchEnd={this.endPaintEvent}
+        />
+      </Fragment>
     );
   }
 }
