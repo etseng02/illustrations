@@ -10,6 +10,7 @@ module.exports = router;
 
 
 /*
+
 THIS IS THE SERVER
 
 const http = require('http');
@@ -21,8 +22,8 @@ const server = http.createServer((req, res) => {
 const port = 3210;
 server.listen(port, () => console.log(`Server running at http://localhost:${port}`));
 
-HTML
 
+HTML
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,8 +37,8 @@ HTML
   </body>
 </html>
 
-REPLACE SOME OF THE SERVER CODE
 
+REPLACE SOME OF THE SERVER CODE
 
 const http = require('http');
 const crypto = require('crypto');
@@ -60,8 +61,5 @@ function generateAcceptValue (acceptKey) {
   .update(acceptKey + '258EAFA5-E914–47DA-95CA-C5AB0DC85B11', 'binary')
   .digest('base64');
 }
-
-
-
 
 */
