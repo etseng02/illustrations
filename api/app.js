@@ -43,6 +43,8 @@ app.use(function(err, req, res, next) {
 //   socket.on('my other event', function (data) {
 //     console.log(data);
 //   });
+
+const rooms = require("./routes/create_room")
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
@@ -56,10 +58,14 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
+  socket.on('createRoom', function (data) {
     console.log(data);
+    // put call to database here
+
+    
   });
 });
 
 
 module.exports = app;
+
