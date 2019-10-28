@@ -64,12 +64,12 @@ io.on('connection', function (socket) {
     db.query(`
       INSERT INTO rooms (code)
       VALUES 
-        ($1);
-    `, [data.roomCode]).then((res)=>{
-      console.log(res)
-    }).catch((err)=>{
-      console.error(err)
-    })
+      ($1);
+      `, [data.roomCode]).then((res)=>{
+        console.log("A new room has been created:", data.roomCode)
+      }).catch((err)=>{
+        console.error(err)
+      })
     // rooms(db, data.roomCode)
     
   });
