@@ -61,8 +61,16 @@ io.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });
   socket.on('createRoom', function (data) {
     console.log(data);
-    // put call to database here
-    rooms(db, data.roomCode)
+    db.query(`
+      INSERT INTO rooms (code)
+      VALUES 
+        ($1);
+    `, [data.roomCode]).then((res)=>{
+      console.log(res)
+    }).catch((err)=>{
+      console.error(err)
+    })
+    // rooms(db, data.roomCode)
     
   });
 });
