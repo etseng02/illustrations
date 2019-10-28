@@ -5,6 +5,10 @@ import Button from './components/Button'
 import JoinRoom from './components/JoinRoom'
 import HostRoom from './components/HostRoom'
 
+const WebSocket = require('ws');
+const ws = new WebSocket('ws://localhost:3030')
+
+
 
 function App() {
   
