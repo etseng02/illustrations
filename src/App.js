@@ -1,12 +1,16 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import './App.css';
 import Canvas from './components/Canvas'
 import Button from './components/Button'
 import JoinRoom from './components/JoinRoom'
 import HostRoom from './components/HostRoom'
+const io = require('socket.io-client');
 
 
 function App() {
+
+  var socket = io('http://localhost');
+
   
   const [state, setState] = useState({
     roomID: "",
@@ -35,6 +39,13 @@ function App() {
     let roomCode = generateRandomString()
     setState({ ...state, hostMachine: true, roomID: roomCode })
   }
+
+  useEffect(() => {
+    socket.on('news', function (data) {
+      console.log(data);
+      socket.emit('my other event', { my: 'data' });
+    });
+  })
   
   return (
     <Fragment>
