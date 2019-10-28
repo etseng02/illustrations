@@ -21,6 +21,17 @@ function App() {
     phase: "",
   });
 
+  //call this function with the number of players
+  //IE: generatePlayersArray(players.count()) or something similar
+  function generatePlayersArray(size, startAt = 1) {
+    const players = [...Array(size).keys()].map(i => i + startAt)
+    players.unshift(players.pop())
+    players.forEach(() => {
+       players.push(players.shift())
+       //THIS IS WHERE WE WILL ADD PLAYERS ARRAY INTO JSON
+    });
+  }
+
   function enterRoom(name, room){
     setState({ ...state, name: name, roomID: room });
   }
