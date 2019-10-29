@@ -9,7 +9,7 @@ const io = require('socket.io-client');
 
 function App() {
 
-  var socket = io('http://localhost');
+  var socket = io('http://localhost:8080');
 
   
   const [state, setState] = useState({
