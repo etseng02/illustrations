@@ -106,7 +106,11 @@ class Canvas extends Component {
   convertToBlob() {
     let img = new Image();
     this.canvas.toBlob(function(blob) {
-      const blobURL = URL.createObjectURL(blob);
+      const jsonSample = '{ "word": "cat", "players": [1, 2, 3], "drawings": [], "guesses": [] }';
+      const jsonData = JSON.parse(jsonSample);
+      jsonData.drawings.push(blob);
+      console.log(jsonData);
+      const blobURL = URL.createObjectURL(jsonData.drawings[0]);
       img.src = blobURL;
       document.body.appendChild(img);
     }, "image/png", 0.75);
