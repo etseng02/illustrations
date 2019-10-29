@@ -61,7 +61,7 @@ app.get('/', function (req, res) {
 //Socket connection to handle Room Creation Logic
 io.on('connection', function (socket) {
   //socket.emit('news', { hello: 'world' });
-  console.log('a user connected');
+  //console.log('a user connected');
 
   socket.on('createRoom', function (data) {
     console.log(data);
@@ -70,19 +70,24 @@ io.on('connection', function (socket) {
       VALUES 
       ($1);
       `, [data.roomCode]).then((res)=>{
+        socket.join(data.roomCode);
         console.log("A new room has been created:", data.roomCode)
-        console.log("These are all the current rooms: ", io.sockets.adapter.rooms)
+        //console.log("These are all the current rooms: ", io.sockets.adapter.rooms)\
+        console.log(Object.keys(socket.rooms))
+        
       }).catch((err)=>{
         console.error(err)
       })
   });
 
   socket.on('joinRoom', function (data) {
-    console.log(data);
+    //console.log(data);
+    console.log(Object.keys(socket.rooms))
+    socket.join(data.roomCode);
     //console.log(io.sockets.clients(data.roomCode));
     // console.log(io.of(data.roomCode).clients());
-    console.log(Object.keys(io.sockets.sockets))
-    socket.to(data.roomCode).emit(`A new player has joined ${data.roomCode}`);
+    //console.log(Object.keys(io.sockets.sockets))
+    socket.to(data.roomCode).emit('system', `A new player has joined ${data.roomCode}`);
   });
 });
 
