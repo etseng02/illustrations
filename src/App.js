@@ -33,6 +33,10 @@ function App() {
   }
 
   function enterRoom(name, room){
+    socket.on('connection', function(socket){
+      socket.join(room);
+    });
+    socket.emit('joinRoom', { roomCode: `${room}` });
     setState({ ...state, name: name, roomID: room });
   }
 
@@ -52,15 +56,16 @@ function App() {
       socket.join(roomCode);
     });
     socket.emit('createRoom', { roomCode: `${roomCode}` });
+    
     setState({ ...state, hostMachine: true, roomID: roomCode })
   }
 
-  useEffect(() => {
-    socket.on('news', function (data) {
-      console.log(data);
-      socket.emit('my other event', { client: 'connected' });
-    });
-  })
+  // useEffect(() => {
+  //   socket.on('news', function (data) {
+  //     console.log(data);
+  //     socket.emit('my other event', { client: 'connected' });
+  //   });
+  // })
   
   return (
     <Fragment>

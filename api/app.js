@@ -57,8 +57,12 @@ app.get('/', function (req, res) {
   res.send('I am alive!');
 });
 
+
+//Socket connection to handle Room Creation Logic
 io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
+  //socket.emit('news', { hello: 'world' });
+  console.log('a user connected');
+
   socket.on('createRoom', function (data) {
     console.log(data);
     db.query(`
@@ -67,13 +71,26 @@ io.on('connection', function (socket) {
       ($1);
       `, [data.roomCode]).then((res)=>{
         console.log("A new room has been created:", data.roomCode)
+        console.log("These are all the current rooms: ", io.sockets.adapter.rooms)
       }).catch((err)=>{
         console.error(err)
       })
-    // rooms(db, data.roomCode)
-    
+  });
+
+  socket.on('joinRoom', function (data) {
+    console.log(data);
+    //console.log(io.sockets.clients(data.roomCode));
+    // console.log(io.of(data.roomCode).clients());
+    console.log(Object.keys(io.sockets.sockets))
+    socket.to(data.roomCode).emit(`A new player has joined ${data.roomCode}`);
   });
 });
+
+//Socket connection to handle Join Room logic
+// io.on('connection', function (socket) {
+
+//   });
+// });
 
 
 module.exports = app;
