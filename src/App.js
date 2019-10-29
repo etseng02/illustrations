@@ -33,6 +33,10 @@ function App() {
   }
 
   function enterRoom(name, room){
+    socket.on('connection', function(socket){
+      socket.join(room);
+    });
+    socket.emit('joinRoom', { roomCode: `${room}` });
     setState({ ...state, name: name, roomID: room });
   }
 

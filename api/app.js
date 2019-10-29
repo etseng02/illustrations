@@ -57,6 +57,7 @@ app.get('/', function (req, res) {
   res.send('I am alive!');
 });
 
+//Socket connection to handle Room Creation Logic
 io.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });
   socket.on('createRoom', function (data) {
@@ -72,6 +73,13 @@ io.on('connection', function (socket) {
       })
     // rooms(db, data.roomCode)
     
+  });
+});
+
+//Socket connection to handle Join Room logic
+io.on('connection', function (socket) {
+  socket.on('joinRoom', function (data) {
+    console.log(data);
   });
 });
 
