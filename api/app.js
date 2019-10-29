@@ -70,32 +70,30 @@ io.on('connection', function (socket) {
       VALUES 
       ($1);
       `, [data.roomCode]).then((res)=>{
+        socket.name = "host";
         socket.join(data.roomCode);
         console.log("A new room has been created:", data.roomCode)
         //console.log("These are all the current rooms: ", io.sockets.adapter.rooms)\
-        console.log(Object.keys(socket.rooms))
+        //console.log(Object.keys(socket.rooms))
         
       }).catch((err)=>{
         console.error(err)
       })
   });
 
-  socket.on('joinRoom', function (data) {
-    //console.log(data);
-    console.log(Object.keys(socket.rooms))
-    socket.join(data.roomCode);
-    //console.log(io.sockets.clients(data.roomCode));
-    // console.log(io.of(data.roomCode).clients());
-    //console.log(Object.keys(io.sockets.sockets))
-    socket.to(data.roomCode).emit('system', `A new player has joined ${data.roomCode}`);
+  socket.on('joinRoom', function (name, room) {
+    socket.name = name;
+    socket.join(room);
+    console.log(`${socket.name} has joined ${room}`)
+    //add db query here use name and room
+
+    
+    // var clients = io.sockets.adapter.rooms[room].sockets;   
+    // console.log(clients)
+    socket.to(room).emit('hostMode', `${name}`);
+
   });
 });
-
-//Socket connection to handle Join Room logic
-// io.on('connection', function (socket) {
-
-//   });
-// });
 
 
 module.exports = app;

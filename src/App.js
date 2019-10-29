@@ -19,6 +19,7 @@ function App() {
     keyword: "",
     hostMachine: false,
     phase: "",
+    players:[],
   });
 
   //call this function with the number of players
@@ -36,7 +37,7 @@ function App() {
     // socket.on('connection', function(socket){
     //   socket.join(room);
     // });
-    socket.emit('joinRoom', { roomCode: `${room}` });
+    socket.emit('joinRoom', name, room );
 
     setState({ ...state, name: name, roomID: room });
   }
@@ -67,6 +68,13 @@ function App() {
       //socket.emit('my other event', { client: 'connected' });
     });
   })
+
+  useEffect(() => {
+    socket.on('hostMode', function (player) {
+      console.log(player)
+      state.players.push(player)
+    });
+  }, )
   
   return (
     <Fragment>
@@ -75,6 +83,7 @@ function App() {
       <Fragment>
         <HostRoom
           roomID={state.roomID}
+          players={state.players}
         >
         </HostRoom>
 
