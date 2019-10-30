@@ -20,7 +20,6 @@ if (process.env.DATABASE_URL) {
 }
 
 
-console.log(dbParams)
 
 const client = new pg.Client(dbParams);
 
