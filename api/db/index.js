@@ -1,5 +1,5 @@
 const pg = require("pg");
-require('dotenv').config();
+require('dotenv').config({ path: '/home/mallory/lighthouse/illustrations/api/.env' });
 
 let dbParams = {};
 
@@ -18,6 +18,8 @@ if (process.env.DATABASE_URL) {
     database: process.env.PGDATABASE
   }
 }
+
+
 
 const client = new pg.Client(dbParams);
 

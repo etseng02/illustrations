@@ -4,6 +4,7 @@ import Canvas from './components/Canvas'
 import Button from './components/Button'
 import JoinRoom from './components/JoinRoom'
 import HostRoom from './components/HostRoom'
+import Waiting from './components/Waiting'
 const io = require('socket.io-client');
 
 
@@ -19,6 +20,8 @@ function App() {
     keyword: "",
     hostMachine: false,
     phase: "",
+    players:[],
+    ready: [],
   });
 
   //call this function with the number of players
@@ -36,7 +39,7 @@ function App() {
     // socket.on('connection', function(socket){
     //   socket.join(room);
     // });
-    socket.emit('joinRoom', { roomCode: `${room}` });
+    socket.emit('joinRoom', name, room );
 
     setState({ ...state, name: name, roomID: room });
   }
@@ -61,10 +64,42 @@ function App() {
     setState({ ...state, hostMachine: true, roomID: roomCode })
   }
 
+  function startGame(){
+    socket.on('system', function (data) {
+      socket.emit('startGame', state.room);
+      console.log(data);
+    });
+  }
+
+  function ready(){
+    console.log("the ready button was clicked fo sho")
+    console.log(state.room, state.name, "is going to be sent to the server as ready")
+    socket.emit('Ready', state.roomID, state.name);
+  }
+
   useEffect(() => {
     socket.on('system', function (data) {
       console.log(data);
-      //socket.emit('my other event', { client: 'connected' });
+    });
+  })
+
+  useEffect(() => {
+    socket.on('hostMode', function (player) {
+      console.log(player)
+      setState(prevState => ({ ...prevState, players: [ ...prevState.players, player] }))
+      console.log(state.players)
+    });
+  }, )
+
+  useEffect(() =>{
+    socket.on('Ready', function (name) {
+      console.log("I have received a message")
+      if (state.ready.includes(name)){
+        //do nothing
+        console.log("the ready player is already in ready state")
+      } else {
+          setState(prevState => ({ ...prevState, ready: [ ...prevState.ready, name] }))
+      }
     });
   })
   
@@ -74,7 +109,10 @@ function App() {
       {state.roomID && state.hostMachine &&
       <Fragment>
         <HostRoom
+          ready={state.ready}
           roomID={state.roomID}
+          players={state.players}
+          onClick={startGame}
         >
         </HostRoom>
 
@@ -93,12 +131,24 @@ function App() {
        </Fragment>
       }
 
+      {state.roomID && !state.hostMachine && //If the client receives room ID and is not the host machine, put client in waiting room
+      <Fragment>
+        <Waiting
+          name={state.name}
+          room={state.roomID}
+          message="Waiting for Game to Start"
+          onClick={ready}
+        ></Waiting>
+      </Fragment>
+      }
+
+      {/* 
       {state.roomID && !state.hostMachine && //Draw Phase
       <Fragment>
         <h3 style={{ textAlign: 'center' }}>Draw Phase</h3>
         <Canvas />
       </Fragment>
-      }
+      } */}
 
 
     </Fragment>
