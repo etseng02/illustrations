@@ -1,5 +1,5 @@
 const pg = require("pg");
-require('dotenv').config({ path: '/home/mallory/lighthouse/illustrations/api/.env' });
+require('dotenv').config();
 
 let dbParams = {};
 
