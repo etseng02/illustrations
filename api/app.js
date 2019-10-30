@@ -82,16 +82,29 @@ io.on('connection', function (socket) {
   });
 
   socket.on('joinRoom', function (name, room) {
-    socket.name = name;
-    socket.join(room);
-    console.log(`${socket.name} has joined ${room}`)
-    //add db query here use name and room
 
+    db.query(`
+      INSERT INTO players (name, room_id, player_position)
+        VALUES ($1, 
+          (SELECT id FROM rooms WHERE rooms.code = $2), 
+          (SELECT COUNT (players.id) FROM players
+            JOIN rooms ON rooms.id = players.room_id
+            WHERE rooms.code = $2) +1);
+    `, [name, room]).then((res) => {
+      socket.name = name;
+      socket.join(room);
+      console.log(`${socket.name} has joined ${room}`)
+      //add db query here use name and room
+      
+      // var clients = io.sockets.adapter.rooms[room].sockets;   
+      // console.log(clients)
+      socket.to(room).emit('hostMode', `${name}`);
+
+    }).catch((err) => {
+      console.log(err)
+    })
     
-    // var clients = io.sockets.adapter.rooms[room].sockets;   
-    // console.log(clients)
-    socket.to(room).emit('hostMode', `${name}`);
-
+    
   });
 });
 
