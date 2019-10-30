@@ -65,14 +65,10 @@ function App() {
   }
 
   function startGame(){
-    socket.on('system', function (data) {
-      socket.emit('startGame', state.room);
-      console.log(data);
-    });
+    socket.emit('startGame', state.roomID);
   }
 
   function ready(){
-    console.log("the ready button was clicked fo sho")
     console.log(state.room, state.name, "is going to be sent to the server as ready")
     socket.emit('Ready', state.roomID, state.name);
   }
@@ -100,6 +96,12 @@ function App() {
       } else {
           setState(prevState => ({ ...prevState, ready: [ ...prevState.ready, name] }))
       }
+    });
+  })
+
+  useEffect(()=>{
+    socket.on('startGame', function (data) {
+        console.log("A start command has been issued")
     });
   })
 

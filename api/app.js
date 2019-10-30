@@ -111,6 +111,16 @@ io.on('connection', function (socket) {
     console.log(`${name} is ready in ${room}`)
     socket.to(room).emit('Ready', `${name}`);
   });
+
+  socket.on('startGame', function (room) {
+    console.log(`${room} has requested to start a game`)
+    //insert start game query logic here
+
+
+    
+    socket.to(room).emit('startGame', 'start');
+  });
+
 });
 
 
