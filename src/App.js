@@ -72,7 +72,11 @@ function App() {
   useEffect(() => {
     socket.on('hostMode', function (player) {
       console.log(player)
-      state.players.push(player)
+      //state.players.push(player)
+
+      setState(prevState => ({ ...prevState, players: [ ...prevState.players, player] }))
+
+      console.log(state.players)
     });
   }, )
   

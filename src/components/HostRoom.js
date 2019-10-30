@@ -9,7 +9,11 @@ export default function HostRoom(props) {
     <Fragment>
       <h1>Room Code: {props.roomID}</h1>
       <h2>Players in Lobby</h2>
-      <h3>{props.players}</h3>
+      {
+        props.players.map(
+          (player) => <h3 key={player}>{player}</h3>
+        )
+      }
       <Button>Start Game</Button>
 
     </Fragment>
