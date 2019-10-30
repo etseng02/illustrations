@@ -93,6 +93,11 @@ io.on('connection', function (socket) {
     socket.to(room).emit('hostMode', `${name}`);
 
   });
+
+  socket.on('Ready', function (room, name) {
+    console.log(`${name} is ready in ${room}`)
+    socket.to(room).emit('Ready', `${name}`);
+  });
 });
 
 
