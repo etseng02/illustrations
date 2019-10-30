@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import Pusher from 'pusher-js';
+import reactCSS from 'reactcss'
+import { CirclePicker } from 'react-color'
 
 class Canvas extends Component {
   constructor(props) {
@@ -11,14 +13,34 @@ class Canvas extends Component {
     //mobile
     this.onTouchStart= this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
+
     this.pusher = new Pusher('b37e8b05f23c407c454e', {
       cluster: 'us2',
     });
   }
 
+  //COLOR PICKER
+  state = {
+    displayColorPicker: false,
+    color: {
+    },
+  };
+
+  handleClick = () => {
+    this.setState({ displayColorPicker: !this.state.displayColorPicker })
+  };
+  
+  handleClose = () => {
+    this.setState({ displayColorPicker: false })
+  };
+  
+  handleChange = (color) => {
+    this.setState({ color: color.hex })
+  };
+  //COLOR PICKER END
+  
   isPainting = false;
   // Different stroke styles to be used for user and guest
-  userStrokeStyle = '#000';
   line = [];
   prevPos = { clientX: 0, clientY: 0 };
 
@@ -29,6 +51,7 @@ class Canvas extends Component {
   // }
 
   onMouseDown({ nativeEvent }) {
+    this.userStrokeStyle = this.state.color;
     const { clientX, clientY } = nativeEvent;
     this.isPainting = true;
     this.prevPos = { clientX, clientY };
@@ -56,6 +79,7 @@ class Canvas extends Component {
   }
   //mobile
   onTouchStart({ nativeEvent}) {
+    this.userStrokeStyle = this.state.color;
     const { clientX, clientY } = nativeEvent.touches[0];
     this.isPainting = true;
     this.prevPos = { clientX, clientY };
@@ -104,6 +128,7 @@ class Canvas extends Component {
 
 
   convertToBlob() {
+    console.log(this.state.color);
     let img = new Image();
     this.canvas.toBlob(function(blob) {
       const jsonSample = '{ "word": "cat", "players": [1, 2, 3], "drawings": [], "guesses": [] }';
@@ -141,16 +166,55 @@ class Canvas extends Component {
   }
 
   render() {
+    const styles = reactCSS({
+      'default': {
+        color: {
+          width: '36px',
+          height: '14px',
+          borderRadius: '2px',
+          background: `rgba(${ this.state.color.r }, ${ this.state.color.g }, ${ this.state.color.b }, ${ this.state.color.a })`,
+        },
+        swatch: {
+          padding: '5px',
+          background: '#fff',
+          borderRadius: '1px',
+          boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
+          display: 'inline-block',
+          cursor: 'pointer',
+        },
+        popover: {
+          position: 'absolute',
+          zIndex: '2',
+        },
+        cover: {
+          position: 'absolute',
+          top: '0px',
+          right: '0px',
+          bottom: '0px',
+          left: '0px',
+        },
+      },
+    });
     return (
       <Fragment>
         <button
           onClick={this.convertToBlob}>
             what
         </button>
+        <div>
+        <div style={ styles.swatch } onClick={ this.handleClick }>
+          <div style={ styles.color } />
+        </div>
+        { this.state.displayColorPicker ? <div style={ styles.popover }>
+          <div style={ styles.cover } onClick={ this.handleClose }/>
+          <CirclePicker color={ this.state.color } onChange={ this.handleChange } />
+        </div> : null }
+
+      </div>
         <canvas
         // We use the ref attribute to get direct access to the canvas element. 
           ref={(ref) => (this.canvas = ref)}
-          style={{ background: 'blue' }}
+          style={{ background: 'white' }}
           onMouseDown={this.onMouseDown}
           onMouseLeave={this.endPaintEvent}
           onMouseUp={this.endPaintEvent}
