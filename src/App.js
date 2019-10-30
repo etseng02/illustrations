@@ -21,6 +21,7 @@ function App() {
     hostMachine: false,
     phase: "",
     players:[],
+    ready: [],
   });
 
   //call this function with the number of players
@@ -65,9 +66,15 @@ function App() {
 
   function startGame(){
     socket.on('system', function (data) {
-      socket.to(state.room).emit('startGame', `start`);
+      socket.emit('startGame', state.room);
       console.log(data);
     });
+  }
+
+  function ready(){
+    console.log("the ready button was clicked fo sho")
+    console.log(state.room, state.name, "is going to be sent to the server as ready")
+    socket.emit('Ready', state.roomID, state.name);
   }
 
   useEffect(() => {
@@ -83,6 +90,18 @@ function App() {
       console.log(state.players)
     });
   }, )
+
+  useEffect(() =>{
+    socket.on('Ready', function (name) {
+      console.log("I have received a message")
+      if (state.ready.includes(name)){
+        //do nothing
+        console.log("the ready player is already in ready state")
+      } else {
+          setState(prevState => ({ ...prevState, ready: [ ...prevState.ready, name] }))
+      }
+    });
+  })
   
   return (
     <Fragment>
@@ -90,6 +109,7 @@ function App() {
       {state.roomID && state.hostMachine &&
       <Fragment>
         <HostRoom
+          ready={state.ready}
           roomID={state.roomID}
           players={state.players}
           onClick={startGame}
@@ -114,7 +134,10 @@ function App() {
       {state.roomID && !state.hostMachine && //If the client receives room ID and is not the host machine, put client in waiting room
       <Fragment>
         <Waiting
+          name={state.name}
+          room={state.roomID}
           message="Waiting for Game to Start"
+          onClick={ready}
         ></Waiting>
       </Fragment>
       }
