@@ -4,6 +4,7 @@ import Canvas from './components/Canvas'
 import Button from './components/Button'
 import JoinRoom from './components/JoinRoom'
 import HostRoom from './components/HostRoom'
+import Waiting from './components/Waiting'
 const io = require('socket.io-client');
 
 
@@ -62,20 +63,23 @@ function App() {
     setState({ ...state, hostMachine: true, roomID: roomCode })
   }
 
+  function startGame(){
+    socket.on('system', function (data) {
+      socket.to(state.room).emit('startGame', `start`);
+      console.log(data);
+    });
+  }
+
   useEffect(() => {
     socket.on('system', function (data) {
       console.log(data);
-      //socket.emit('my other event', { client: 'connected' });
     });
   })
 
   useEffect(() => {
     socket.on('hostMode', function (player) {
       console.log(player)
-      //state.players.push(player)
-
       setState(prevState => ({ ...prevState, players: [ ...prevState.players, player] }))
-
       console.log(state.players)
     });
   }, )
@@ -88,6 +92,7 @@ function App() {
         <HostRoom
           roomID={state.roomID}
           players={state.players}
+          onClick={startGame}
         >
         </HostRoom>
 
@@ -106,12 +111,21 @@ function App() {
        </Fragment>
       }
 
+      {state.roomID && !state.hostMachine && //If the client receives room ID and is not the host machine, put client in waiting room
+      <Fragment>
+        <Waiting
+          message="Waiting for Game to Start"
+        ></Waiting>
+      </Fragment>
+      }
+
+      {/* 
       {state.roomID && !state.hostMachine && //Draw Phase
       <Fragment>
         <h3 style={{ textAlign: 'center' }}>Draw Phase</h3>
         <Canvas />
       </Fragment>
-      }
+      } */}
 
 
     </Fragment>

@@ -14,7 +14,7 @@ export default function HostRoom(props) {
           (player) => <h3 key={player}>{player}</h3>
         )
       }
-      <Button>Start Game</Button>
+      <Button onClick = {() => props.onClick()}>Start Game</Button>
 
     </Fragment>
   );
