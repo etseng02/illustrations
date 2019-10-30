@@ -22,8 +22,7 @@ class Canvas extends Component {
   //COLOR PICKER
   state = {
     displayColorPicker: false,
-    color: {
-    },
+    color: "#000"
   };
 
   handleClick = () => {
@@ -51,6 +50,8 @@ class Canvas extends Component {
   // }
 
   onMouseDown({ nativeEvent }) {
+    console.log(">>>", this.state.color);
+    this.setState({ displayColorPicker: false });
     this.userStrokeStyle = this.state.color;
     const { clientX, clientY } = nativeEvent;
     this.isPainting = true;
@@ -172,7 +173,7 @@ class Canvas extends Component {
           width: '36px',
           height: '14px',
           borderRadius: '2px',
-          background: `rgba(${ this.state.color.r }, ${ this.state.color.g }, ${ this.state.color.b }, ${ this.state.color.a })`,
+          background: this.state.color,
         },
         swatch: {
           padding: '5px',
@@ -193,6 +194,9 @@ class Canvas extends Component {
           bottom: '0px',
           left: '0px',
         },
+        sample: {
+          padding: '20px',
+        },
       },
     });
     return (
@@ -211,6 +215,7 @@ class Canvas extends Component {
         </div> : null }
 
       </div>
+      <div style={ styles.sample }>
         <canvas
         // We use the ref attribute to get direct access to the canvas element. 
           ref={(ref) => (this.canvas = ref)}
@@ -224,6 +229,7 @@ class Canvas extends Component {
           onTouchMove={this.onTouchMove}
           onTouchEnd={this.endPaintEvent}
         />
+      </div>
       </Fragment>
     );
   }
