@@ -102,9 +102,22 @@ function App() {
       }
     });
   })
+
+  //delete later this is for testing purposes
+  function draw() {
+    setState({ ...state, phase: "draw" })
+  }
+
   
   return (
     <Fragment>
+
+      {state.phase === "draw" && //Draw Phase
+      <Fragment>
+        <h3 style={{ textAlign: 'center' }}>Draw Phase</h3>
+        <Canvas />
+      </Fragment>
+      }
 
       {state.roomID && state.hostMachine &&
       <Fragment>
@@ -121,6 +134,9 @@ function App() {
 
       {!state.roomID && !state.hostMachine &&//When roomID is falsy, Join room field, name field, and create room field will be rendered
         <Fragment>
+          <Button
+            onClick={draw}
+          >Draw Iceman</Button>
           <JoinRoom
             onClick={enterRoom}
           >
@@ -142,13 +158,8 @@ function App() {
       </Fragment>
       }
 
-      {/* 
-      {state.roomID && !state.hostMachine && //Draw Phase
-      <Fragment>
-        <h3 style={{ textAlign: 'center' }}>Draw Phase</h3>
-        <Canvas />
-      </Fragment>
-      } */}
+       
+
 
 
     </Fragment>
