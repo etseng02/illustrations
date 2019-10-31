@@ -62,21 +62,21 @@ function App() {
   }
 
   function ready(){
-    console.log(state.room, state.name, "is going to be sent to the server as ready")
+    //console.log(state.room, state.name, "is going to be sent to the server as ready")
     socket.emit('Ready', state.roomID, state.name);
   }
 
   useEffect(() => {
     socket.on('system', function (data) {
-      console.log(data);
+      //console.log(data);
     });
   })
 
   useEffect(() => {
     socket.on('hostMode', function (player) {
-      console.log(player)
+      //console.log(player)
       setState(prevState => ({ ...prevState, players: [ ...prevState.players, player] }))
-      console.log(state.players)
+      //console.log(state.players)
     });
   }, )
 
@@ -103,9 +103,9 @@ function App() {
 
   useEffect(()=>{
     socket.on('joinRoom', function (name, position) {
-      console.log(`Receiving a player position for ${name} and assigning ${position}`)
-      console.log ("this is the client name: ", state.name)
-      console.log ("this is the server name: ", name)
+      //console.log(`Receiving a player position for ${name} and assigning ${position}`)
+      //console.log ("this is the client name: ", state.name)
+      //console.log ("this is the server name: ", name)
       if (name === state.name){
         console.log("the position has been assigned", position)
         setState(prevState => ({ ...prevState, playerPosition: position }))
