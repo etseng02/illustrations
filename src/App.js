@@ -125,7 +125,7 @@ function App() {
 
       {state.phase === "draw" && !state.hostMachine &&//Draw Phase
       <Fragment>
-        <h3 style={{ textAlign: 'center' }}>Draw Phase</h3>
+        <h3 style={{ textAlign: 'center' }}>Draw this: Lonely Cat</h3>
         <Canvas />
       </Fragment>
       }
