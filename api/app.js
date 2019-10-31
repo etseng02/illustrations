@@ -154,6 +154,7 @@ io.on('connection', function (socket) {
         prompts.push(prompt());
       }
       console.log(prompts, playerArray);
+      socket.to(room).emit('startGame', 'start');
       for(let i = 1; i <= res.rows[0].count; i++) {
         // console.log(prompts[i-1])
         console.log(playerArray[i-1])
@@ -161,12 +162,22 @@ io.on('connection', function (socket) {
         db.query(`
           INSERT INTO prompts (game_id, info)
           VALUES ((SELECT id FROM games WHERE games.room_id = (SELECT id FROM rooms WHERE code = $1)),
-          $2);
+          $2)
+          RETURNING info;
         `, [room, JSON.stringify(`{"word": ${prompts[i-1]}, "queue": [${playerArray[i-1]}], "drawings", [], "guesses": []}`)])
       }
-      socket.to(room).emit('startGame', 'start');
+      
 
-    }).catch((err) => {
+    }).then((res) => {
+      return db.query(`
+      SELECT info FROM prompts
+      WHERE game_id = (SELECT id FROM games WHERE games.room_id = (SELECT id FROM rooms WHERE code = $1));
+      `, [room])
+    }).then((res) => {
+      console.log(res)
+    })
+    
+    .catch((err) => {
       console.log(err)
     })
     
