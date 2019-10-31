@@ -3,6 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const prompt = require('./utils/sentencer.js')
+const generatePlayersArray = require('./utils/generatePlayersArray.js')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -65,16 +67,18 @@ io.on('connection', function (socket) {
 
   socket.on('createRoom', function (data) {
     console.log(data);
-    db.query(`
+      db.query(`
       INSERT INTO rooms (code)
       VALUES 
       ($1);
-      `, [data.roomCode]).then((res)=>{
-        socket.name = "host";
-        socket.join(data.roomCode);
-        console.log("A new room has been created:", data.roomCode)
-        //console.log("These are all the current rooms: ", io.sockets.adapter.rooms)\
-        //console.log(Object.keys(socket.rooms))
+      `, [data.roomCode])
+      
+      .then((res)=>{
+      socket.name = "host";
+      socket.join(data.roomCode);
+      console.log("A new room has been created:", data.roomCode)
+      //console.log("These are all the current rooms: ", io.sockets.adapter.rooms)\
+      //console.log(Object.keys(socket.rooms))
         
       }).catch((err)=>{
         console.error(err)
@@ -115,10 +119,45 @@ io.on('connection', function (socket) {
   socket.on('startGame', function (room) {
     console.log(`${room} has requested to start a game`)
     //insert start game query logic here
+    db.query(`
+      INSERT INTO games (room_id)
+      VALUES ((SELECT rooms.id FROM rooms WHERE rooms.code = $1))
+      `, [room])
 
-
+    .then((res) => {
+      return db.query(`
+        SELECT COUNT (players.id) FROM players
+        WHERE players.room_id = (SELECT id FROM rooms WHERE code = $1);
+      `, [room])
+      
+    })
     
-    socket.to(room).emit('startGame', 'start');
+    .then((res) => {
+      console.log(res)
+      let numberOfPlayers = parseInt(res.rows[0].count)
+      
+      let prompts = [];
+      let playerArray = generatePlayersArray(numberOfPlayers);
+      for (let i = 1; i <= res.rows[0].count; i++) {
+        prompts.push(prompt());
+      }
+      console.log(prompts, playerArray);
+      for(let i = 1; i <= res.rows[0].count; i++) {
+        // console.log(prompts[i-1])
+        // console.log(playerArray[i-1])
+
+        db.query(`
+          INSERT INTO prompts (game_id, info)
+          VALUES ((SELECT id FROM games WHERE games.room_id = (SELECT id FROM rooms WHERE code = $1)),
+          $2);
+        `, [room, JSON.stringify(`{"word": ${prompts[i-1]}, "queue": ${playerArray[i-1]}, "drawings", [], "guesses": []}`)])
+      }
+      socket.to(room).emit('startGame', 'start');
+
+    }).catch((err) => {
+      console.log(err)
+    })
+    
   });
 
 });
