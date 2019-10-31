@@ -117,7 +117,10 @@ function App() {
   
   return (
     <Fragment>
-      <Header></Header>
+      <Header
+        room = {state.roomID}
+      >  
+      </Header>
 
 
       {state.phase === "draw" && !state.hostMachine &&//Draw Phase

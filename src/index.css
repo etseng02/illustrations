@@ -5,14 +5,54 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
 }
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
+header {
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
+  background-color: #00eaff;
+  margin:0;
+}
+
 h1#logo {
+  display: flex;
   font-family: 'Bangers', cursive;
-  font-size: 3em;
+  font-size: 4em;
+  color: orangered;
+  /* text-shadow: 2px 2px orangered; */
+  margin:0;
+  text-shadow: 3px 3px black;
+}
+
+h1#room {
+  display: flex;
+  margin:0;
+  float:right;
+  text-align: right;
+  margin-left:auto;
+  margin-right:0; 
+}
+
+
+/* MOBILE VIEW DOWN BELOW THIS LINE */
+
+@media (max-width: 600px) {
+
+  h1#logo {
+    font-size: 2em;
+  }
+
+  header {
+    display: flex;
+    
+  }
+
 }
