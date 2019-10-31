@@ -5,6 +5,7 @@ import Button from './components/Button'
 import JoinRoom from './components/JoinRoom'
 import HostRoom from './components/HostRoom'
 import Waiting from './components/Waiting'
+import Header from './components/Header'
 const io = require('socket.io-client');
 
 
@@ -101,7 +102,10 @@ function App() {
 
   useEffect(()=>{
     socket.on('startGame', function (data) {
-        console.log("A start command has been issued")
+      console.log("starting game and entering draw phase")
+      if (data === "start"){
+        setState(prevState => ({ ...prevState, phase: "draw" }))
+        }
     });
   })
 
@@ -113,8 +117,10 @@ function App() {
   
   return (
     <Fragment>
+      <Header></Header>
 
-      {state.phase === "draw" && //Draw Phase
+
+      {state.phase === "draw" && !state.hostMachine &&//Draw Phase
       <Fragment>
         <h3 style={{ textAlign: 'center' }}>Draw Phase</h3>
         <Canvas />
@@ -128,6 +134,7 @@ function App() {
           roomID={state.roomID}
           players={state.players}
           onClick={startGame}
+          phase={state.phase}
         >
         </HostRoom>
 
