@@ -145,7 +145,7 @@ io.on('connection', function (socket) {
     })
     
     .then((res) => {
-      console.log(res)
+      // console.log(res)
       let numberOfPlayers = parseInt(res.rows[0].count)
       
       let prompts = [];
@@ -153,18 +153,18 @@ io.on('connection', function (socket) {
       for (let i = 1; i <= res.rows[0].count; i++) {
         prompts.push(prompt());
       }
-      console.log(prompts, playerArray);
+      // console.log(prompts, playerArray);
       socket.to(room).emit('startGame', 'start');
       for(let i = 1; i <= res.rows[0].count; i++) {
         // console.log(prompts[i-1])
-        console.log(playerArray[i-1])
+        // console.log(playerArray[i-1])
 
         db.query(`
           INSERT INTO prompts (game_id, info)
           VALUES ((SELECT id FROM games WHERE games.room_id = (SELECT id FROM rooms WHERE code = $1)),
           $2)
           RETURNING info;
-        `, [room, JSON.stringify(`{"word": ${prompts[i-1]}, "queue": [${playerArray[i-1]}], "drawings", [], "guesses": []}`)])
+        `, [room, JSON.stringify(`{"word": "${prompts[i-1]}", "queue": [${playerArray[i-1]}], "drawings": [], "guesses": []}`)])
       }
       
 
@@ -174,7 +174,23 @@ io.on('connection', function (socket) {
       WHERE game_id = (SELECT id FROM games WHERE games.room_id = (SELECT id FROM rooms WHERE code = $1));
       `, [room])
     }).then((res) => {
-      console.log(res)
+      let wordArray = [];
+      let positionArray = [];
+      for(let i = 0; i < res.rows.length; i++) {
+        // const infoData = JSON.parse(res.rows[i].info);
+        // console.log(res.rows[i].info);
+        let jsonData = JSON.parse(res.rows[i].info);
+        // console.log(jsonData);
+        wordArray.push(jsonData.word)
+        positionArray.push(jsonData.queue[0])
+      }
+      // console.log("these are the arrays", wordArray, positionArray)
+      let finalArray = [];
+      for(let i = 0; i < wordArray.length; i++) {
+        finalArray.push([wordArray[i], positionArray[i]]);
+      }
+      console.log(finalArray);
+      socket.to(room).emit('start', finalArray);
     })
     
     .catch((err) => {
