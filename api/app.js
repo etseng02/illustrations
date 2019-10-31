@@ -154,7 +154,7 @@ io.on('connection', function (socket) {
         prompts.push(prompt());
       }
       // console.log(prompts, playerArray);
-      socket.to(room).emit('startGame', 'start');
+      //socket.to(room).emit('startGame', 'start');
       for(let i = 1; i <= res.rows[0].count; i++) {
         // console.log(prompts[i-1])
         // console.log(playerArray[i-1])
@@ -190,7 +190,7 @@ io.on('connection', function (socket) {
         finalArray.push([wordArray[i], positionArray[i]]);
       }
       console.log(finalArray);
-      socket.to(room).emit('start', finalArray);
+      socket.to(room).emit('startGame', finalArray);
     })
     
     .catch((err) => {

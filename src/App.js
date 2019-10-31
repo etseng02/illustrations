@@ -94,10 +94,9 @@ function App() {
 
   useEffect(()=>{
     socket.on('startGame', function (data) {
-      console.log("starting game and entering draw phase")
-      if (data === "start"){
+      console.log("starting game command has been issued")
+      console.log("this is the data received:",data)
         setState(prevState => ({ ...prevState, round: 0 }))
-        }
     });
   })
 
