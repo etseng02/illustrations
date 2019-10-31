@@ -41,9 +41,27 @@ function App() {
     //   socket.join(room);
     // });
     setState({ ...state, name: name, roomID: room });
-    socket.emit('joinRoom', name, room );
+    // socket.emit('joinRoom', name, room );
+    // var promise = function(name, room){
+    //   setState(prevState => ({ ...prevState, name: name, roomID: room }))
+    // }
+    // promise(name, room).then(() => {
+    //   console.log("this worked ok")
+    //   console.log("name state has been assigned")
+    //   socket.emit('joinRoom', name, room );
+    // }).catch((err) => {
+    //   console.log(err)
+    // })
+    
+    // let promise1 = setState(prevState => ({ ...prevState, name: name, roomID: room }))
 
-    console.log("name state has been assigned")
+    // let promise2 = socket.emit('joinRoom', name, room );
+
+    // Promise.all([promise1, promise2]).then(function(values) {
+    //   console.log(values);
+    // });
+ 
+
   }
 
   
@@ -113,14 +131,24 @@ function App() {
   useEffect(()=>{
     socket.on('joinRoom', function (name, position) {
       console.log(`Receiving a player position for ${name} and assigning ${position}`)
-      console.log (name, state.name)
-      console.log(state);
+      console.log ("this is the client name: ", state.name)
+      console.log ("this is the server name: ", name)
       if (name === state.name){
         console.log("the position has been assigned", position)
         setState(prevState => ({ ...prevState, playerPosition: position }))
         }
     });
   })
+
+  useEffect(()=>{
+    if (state.name){
+      console.log("this is the state at name change", state)
+      console.log("the name state has changed")
+      socket.emit('joinRoom', state.name, state.roomID );
+    }
+  },[state.name])
+
+
 
   //delete later this is for testing purposes
   function draw() {
