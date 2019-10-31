@@ -23,47 +23,23 @@ function App() {
     phase: "",
     players:[],
     ready: [],
+    round: null,
   });
 
   //call this function with the number of players
   //IE: generatePlayersArray(players.count()) or something similar
-  function generatePlayersArray(size, startAt = 1) {
-    const players = [...Array(size).keys()].map(i => i + startAt)
-    players.unshift(players.pop())
-    players.forEach(() => {
-       players.push(players.shift())
-       //THIS IS WHERE WE WILL ADD PLAYERS ARRAY INTO JSON
-    });
-  }
+  // function generatePlayersArray(size, startAt = 1) {
+  //   const players = [...Array(size).keys()].map(i => i + startAt)
+  //   players.unshift(players.pop())
+  //   players.forEach(() => {
+  //      players.push(players.shift())
+  //      //THIS IS WHERE WE WILL ADD PLAYERS ARRAY INTO JSON
+  //   });
+  // }
 
   function enterRoom(name, room){
-    // socket.on('connection', function(socket){
-    //   socket.join(room);
-    // });
     setState({ ...state, name: name, roomID: room });
-    // socket.emit('joinRoom', name, room );
-    // var promise = function(name, room){
-    //   setState(prevState => ({ ...prevState, name: name, roomID: room }))
-    // }
-    // promise(name, room).then(() => {
-    //   console.log("this worked ok")
-    //   console.log("name state has been assigned")
-    //   socket.emit('joinRoom', name, room );
-    // }).catch((err) => {
-    //   console.log(err)
-    // })
-    
-    // let promise1 = setState(prevState => ({ ...prevState, name: name, roomID: room }))
-
-    // let promise2 = socket.emit('joinRoom', name, room );
-
-    // Promise.all([promise1, promise2]).then(function(values) {
-    //   console.log(values);
-    // });
- 
-
   }
-
   
   const generateRandomString = function() {
     const possibleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -76,9 +52,6 @@ function App() {
 
   function createRoom(){
     let roomCode = generateRandomString()
-    // socket.on('connect', function(socket){
-    //   //socket.join(roomCode);
-    // });
     socket.emit('createRoom', { roomCode: `${roomCode}` });
     
     setState({ ...state, hostMachine: true, roomID: roomCode })
@@ -123,7 +96,7 @@ function App() {
     socket.on('startGame', function (data) {
       console.log("starting game and entering draw phase")
       if (data === "start"){
-        setState(prevState => ({ ...prevState, phase: "draw" }))
+        setState(prevState => ({ ...prevState, round: 0 }))
         }
     });
   })
@@ -142,13 +115,23 @@ function App() {
 
   useEffect(()=>{
     if (state.name){
-      console.log("this is the state at name change", state)
       console.log("the name state has changed")
       socket.emit('joinRoom', state.name, state.roomID );
     }
   },[state.name])
 
+  useEffect(()=>{
+    if (state.round === null) {
 
+    } else if (state.round >= 0){
+      console.log("the round state has changed")
+      if (state.round % 2 == 0) {
+        setState(prevState => ({ ...prevState, phase: "draw" }))
+      }
+    }
+  },[state.round])
+
+  
 
   //delete later this is for testing purposes
   function draw() {
