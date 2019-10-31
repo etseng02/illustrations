@@ -40,9 +40,10 @@ function App() {
     // socket.on('connection', function(socket){
     //   socket.join(room);
     // });
+    setState({ ...state, name: name, roomID: room });
     socket.emit('joinRoom', name, room );
 
-    setState({ ...state, name: name, roomID: room });
+    console.log("name state has been assigned")
   }
 
   
@@ -105,6 +106,18 @@ function App() {
       console.log("starting game and entering draw phase")
       if (data === "start"){
         setState(prevState => ({ ...prevState, phase: "draw" }))
+        }
+    });
+  })
+
+  useEffect(()=>{
+    socket.on('joinRoom', function (name, position) {
+      console.log(`Receiving a player position for ${name} and assigning ${position}`)
+      console.log (name, state.name)
+      console.log(state);
+      if (name === state.name){
+        console.log("the position has been assigned", position)
+        setState(prevState => ({ ...prevState, playerPosition: position }))
         }
     });
   })

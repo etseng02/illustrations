@@ -94,9 +94,21 @@ io.on('connection', function (socket) {
           (SELECT COUNT (players.id) FROM players
             JOIN rooms ON rooms.id = players.room_id
             WHERE rooms.code = $2) +1);
-    `, [name, room]).then((res) => {
-      socket.name = name;
+    `, [name, room])
+    .then((res) => {
+      return db.query(`
+        SELECT player_position FROM players 
+        WHERE players.name = $1 AND players.room_id = (SELECT rooms.id FROM rooms WHERE rooms.code = $2)
+      `, [name, room])
+    }).then((res) => {
       socket.join(room);
+      return res
+    })
+    .then((res) => {
+      
+      console.log(res.rows[0].player_position)
+      socket.name = name;
+      io.in(room).emit('joinRoom', name, res.rows[0].player_position)
       console.log(`${socket.name} has joined ${room}`)
       //add db query here use name and room
       
