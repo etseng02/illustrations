@@ -188,7 +188,8 @@ function App() {
       {state.phase === "draw" && !state.hostMachine &&//Draw Phase
       <Fragment>
         <h3 style={{ textAlign: 'center' }}>Draw this: {state.prompt}</h3>
-        <Canvas ref={ref => canvasData.current = ref }/>
+        <Canvas ref={ref => canvasData.current = ref }
+                onData={(data) => console.log("parent", data)} />
         <button onClick={onButtonClick}>>??????</button>
       </Fragment>
       }

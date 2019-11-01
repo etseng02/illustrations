@@ -39,10 +39,12 @@ class Canvas extends Component {
     this.setState({ color: color.hex })
   };
 
-  convertToBlob = () => {
-    console.log(this.canvas.toBlob(function(blob) {
-      return new Blob([blob]);
-    }, "image/png", 0.75));
+  convertToBlob() {
+    this.canvas.toBlob((blob) =>  {
+      blob.arrayBuffer().then(data => {
+        this.props.onData(data);
+      })
+    }, "image/png", 0.75);
     // console.log(blobDta);
   };
   //COLOR PICKER END
@@ -59,6 +61,7 @@ class Canvas extends Component {
   // }
 
   onMouseDown({ nativeEvent }) {
+    console.log(this.convertToBlob());
     console.log(">>>", this.state.color);
     this.setState({ displayColorPicker: false });
     this.userStrokeStyle = this.state.color;
