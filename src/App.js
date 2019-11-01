@@ -37,6 +37,7 @@ function App() {
   };
 
   function enterRoom(name, room){
+    console.log("the join room button has been pressed")
     setState({ ...state, name: name, roomID: room });
   }
   
@@ -56,15 +57,16 @@ function App() {
     socket.emit('Ready', state.roomID, state.name);
   }
 
-  useEffect(() => {
+  // useEffect(() => {
     socket.on('hostMode', function (player) {
+      console.log(`receiving a message that ${player} is joining the room.`)
       //console.log(player)
       setState(prevState => ({ ...prevState, players: [ ...prevState.players, player] }))
       //console.log(state.players)
     });
-  }, [state.players])
+  // }, [state.players])
 
-  useEffect(() =>{
+  // useEffect(() =>{
     socket.on('Ready', function (name) {
       //console.log("I have received a message")
       if (state.ready.includes(name)){
@@ -74,41 +76,42 @@ function App() {
           setState(prevState => ({ ...prevState, ready: [ ...prevState.ready, name] }))
       }
     });
-  },[state.ready])
+  // },[state.ready])
 
-  useEffect(()=>{
+  // useEffect(()=>{
   //   console.log('HOOK REDEFINED', state);
     socket.on('startGame', (data) => {
       console.log("starting game command has been issued")
-      console.log("this is the data received:",data)
-      console.log("thats the state son:",state)
+      // console.log("this is the data received:",data)
+      // console.log("thats the state son:",state)
       data.forEach((wordPair)=>{
-        console.log(wordPair, state.playerPosition)
+        // console.log(wordPair, state.playerPosition)
         if (wordPair[1] === state.playerPosition) {
-          console.log('MATCHED!!!');
+          // console.log('MATCHED!!!');
           setState(prevState => ({ ...prevState, round: 0, prompt: wordPair[0]}))
         } else {
-          console.log('DID NOT MATCH', wordPair[1], state.playerPosition);
+          // console.log('DID NOT MATCH', wordPair[1], state.playerPosition);
         }
       })
     });
-  })
+  // })
 
   useEffect(()=>{
     socket.on('joinRoom', function (name, position) {
+      // console.log(`Receiving a player position for ${name} and assigning ${position}`)
+      // console.log ("this is the client name: ", state.name)
+      // console.log ("this is the server name: ", name)
       console.log(`Receiving a player position for ${name} and assigning ${position}`)
-      console.log ("this is the client name: ", state.name)
-      console.log ("this is the server name: ", name)
       if (name === state.name){
         console.log("the position has been assigned", position)
         setState(prevState => ({ ...prevState, playerPosition: position }))
         }
     });
-  }, [state.players])
+  })
 
   useEffect(()=>{
     if (state.name){
-      console.log("the name state has changed")
+      console.log("the name state has changed, sending to the server a joinRoom Command")
       socket.emit('joinRoom', state.name, state.roomID );
     }
   },[state.name])
