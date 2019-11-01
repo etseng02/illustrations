@@ -206,11 +206,11 @@ io.on('connection', function (socket) {
     
   });
 
-  // socket.on('nextRound', function(game, round, room){
-  //   console.log("Testing game and round here", game, round)
-  //   socket.to(room).emit('nextRound', game, round)
+  socket.on('nextRound', function(game, round, room){
+    console.log("Testing game and round here", game, round, room)
+    socket.to(room).emit('nextRound', game, round)
 
-  // })
+  })
 
   // socket.on('clientNextRound', function(game, round, prompt, blob) {
     
