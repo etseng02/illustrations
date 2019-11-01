@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import Button from './Button'
 
-export default function HostRoom({ ready = "", players = [], phase = "", roomID, onClick }) {
+export default function HostRoom({ ready = "", players = [], phase = "", roomID, startGame, nextRound }) {
 
   // const [ready] = useState(props.ready || "");
   // const [players] = useState(props.players || "");
@@ -16,6 +16,7 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
       <Fragment>
         <h1>DRAW PHASE</h1>
         <h2>Draw the prompt on your screen!</h2>
+        <Button  onClick = {() => nextRound()}>Next round</Button>
       </Fragment>
     }
 
@@ -41,7 +42,7 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
           (player) => <h3>{player}</h3>
         )
       }
-      <Button onClick = {() => onClick()}>Start Game</Button>
+      <Button onClick = {() => startGame()}>Start Game</Button>
     </Fragment>
     }
     </Fragment>
