@@ -164,6 +164,11 @@ function App() {
     setState({ ...state, phase: "draw" })
   }
 
+  function nextRound() {
+    console.log("next round command has been sent")
+    socket.emit('nextRound', state.gameID, state.round, );
+  }
+
   
   return (
     <Fragment>
@@ -186,8 +191,9 @@ function App() {
           ready={state.ready}
           roomID={state.roomID}
           players={state.players}
-          onClick={startGame}
+          startGame={startGame}
           phase={state.phase}
+          nextRound={nextRound}
         >
         </HostRoom>
 
