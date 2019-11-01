@@ -160,22 +160,36 @@ function App() {
     }
   },[])
 
-  const onButtonClick = () => {
-    // `current` points to the mounted text input element
-    canvasData.current.convertToBlob();
-  };
-  
+  useEffect(()=>{
+    socket.on('nextRound', function (game, round) {
+      console.log("received a message for next round ", game, round)
+      if (round % 2 === 0)
+        {
+          console.log(canvasData.current.convertToBlob());
+          console.log("this round is even! setting next round!")
+        }
+      //setState(prevState => ({ ...prevState, gameID: game }))
+    });
+    return () => {
+      socket.off('nextRound')
+    }
+  },[])
 
+  
+  
   //delete later this is for testing purposes
   function draw() {
     setState({ ...state, phase: "draw" })
   }
-
+  
   function nextRound() {
     console.log("next round command has been sent")
-    socket.emit('nextRound', state.gameID, state.round, state.room);
+    socket.emit('nextRound', state.gameID, state.round, state.roomID);
   }
-
+  
+  const onButtonClick = () => {
+    canvasData.current.convertToBlob();
+  };
   
   return (
     <Fragment>
