@@ -194,7 +194,8 @@ io.on('connection', function (socket) {
         finalArray.push([wordArray[i], positionArray[i]]);
       }
       console.log(finalArray);
-      socket.to(room).emit('startGame', finalArray);
+      io.in(room).emit('startGame', finalArray)
+      //socket.to(room).emit('startGame', finalArray);
     })
     
     .catch((err) => {
