@@ -57,16 +57,16 @@ function App() {
     socket.emit('Ready', state.roomID, state.name);
   }
 
-  // useEffect(() => {
+  useEffect(() => {
     socket.on('hostMode', function (player) {
       console.log(`receiving a message that ${player} is joining the room.`)
       //console.log(player)
       setState(prevState => ({ ...prevState, players: [ ...prevState.players, player] }))
       //console.log(state.players)
     });
-  // }, [state.players])
+  }, [])
 
-  // useEffect(() =>{
+  useEffect(() =>{
     socket.on('Ready', function (name) {
       //console.log("I have received a message")
       if (state.ready.includes(name)){
@@ -76,13 +76,13 @@ function App() {
           setState(prevState => ({ ...prevState, ready: [ ...prevState.ready, name] }))
       }
     });
-  // },[state.ready])
+  },[])
 
-  // useEffect(()=>{
+  useEffect(()=>{
   //   console.log('HOOK REDEFINED', state);
     socket.on('startGame', (data) => {
       console.log("starting game command has been issued")
-      // console.log("this is the data received:",data)
+      console.log("this is the data received:",data)
       // console.log("thats the state son:",state)
       data.forEach((wordPair)=>{
         // console.log(wordPair, state.playerPosition)
@@ -94,7 +94,12 @@ function App() {
         }
       })
     });
-  // })
+
+    return () => {
+      socket.off('startGame')
+    }
+
+  },[state.playerPosition])
 
   useEffect(()=>{
     socket.on('joinRoom', function (name, position) {
@@ -107,7 +112,10 @@ function App() {
         setState(prevState => ({ ...prevState, playerPosition: position }))
         }
     });
-  })
+    return () => {
+      socket.off('joinRoom')
+    }
+  },[state.name])
 
   useEffect(()=>{
     if (state.name){
@@ -145,7 +153,7 @@ function App() {
 
       {state.phase === "draw" && !state.hostMachine &&//Draw Phase
       <Fragment>
-        <h3 style={{ textAlign: 'center' }}>Draw this: Lonely Cat</h3>
+        <h3 style={{ textAlign: 'center' }}>Draw this: {state.prompt}</h3>
         <Canvas />
       </Fragment>
       }
