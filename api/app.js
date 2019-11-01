@@ -203,19 +203,8 @@ io.on('connection', function (socket) {
     
   });
 
-  socket.on('nextRound', function(game, round, blob, prompt){
-    db.query(`
-      SELECT info FROM prompts 
-      WHERE game_id = $1
-    `, [game])
-    .then((res) => {
-      
-      let jsonInfo = res.rows[0].info
-      JSON.parse(jsonInfo)
-      jsonInfo.drawings.push(blob)
-
-
-    })
+  socket.on('nextRound', function(game, round){
+    
 
   })
 
