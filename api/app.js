@@ -204,7 +204,7 @@ io.on('connection', function (socket) {
     
   });
 
-  // socket.on('nextRound', function(room, round))
+  // socket.on('nextRound', function(game, round))
 
 });
 
