@@ -40,29 +40,10 @@ class Canvas extends Component {
   };
 
   convertToBlob = () => {
-    // this.setState({ drawing: this.canvas.toBlob(blob)})
-    // console.log(this.state.color);
-    // let img = new Image();
-    
-    let blobData = this.canvas.toBlob(function(blob) {
-      console.log(blob);
-      return;
-      // return blob;
-      // blobData = new Blob([blob]);
-      // setState({ drawing: blob })
-      // const jsonSample = '{ "word": "cat", "players": [1, 2, 3], "drawings": [], "guesses": [] }';
-      // const jsonData = JSON.parse(jsonSample);
-      // jsonData.drawings.push(blob);
-      // console.log(jsonData);
-      // const blobURL = URL.createObjectURL(jsonData.drawings[0]);
-      // img.src = blobURL;
-      // document.body.appendChild(img);
-    }, "image/png", 0.75);
-    return blobData;
-    // this.setState({ drawing: blobData});
-    // console.log("blob data", blobData);
-    // console.log(this.state);
-    // console.log(this.state.drawing);
+    console.log(this.canvas.toBlob(function(blob) {
+      return new Blob([blob]);
+    }, "image/png", 0.75));
+    // console.log(blobDta);
   };
   //COLOR PICKER END
   

@@ -160,6 +160,10 @@ function App() {
     }
   },[])
 
+  const onButtonClick = () => {
+    // `current` points to the mounted text input element
+    canvasData.current.convertToBlob();
+  };
   
 
   //delete later this is for testing purposes
@@ -185,6 +189,7 @@ function App() {
       <Fragment>
         <h3 style={{ textAlign: 'center' }}>Draw this: {state.prompt}</h3>
         <Canvas ref={ref => canvasData.current = ref }/>
+        <button onClick={onButtonClick}>>??????</button>
       </Fragment>
       }
 
