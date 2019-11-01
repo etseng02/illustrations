@@ -1,7 +1,7 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, setState } from 'react';
 import Pusher from 'pusher-js';
-import reactCSS from 'reactcss'
-import { CirclePicker } from 'react-color'
+import reactCSS from 'reactcss';
+import { CirclePicker } from 'react-color';
 
 class Canvas extends Component {
   constructor(props) {
@@ -9,6 +9,7 @@ class Canvas extends Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.endPaintEvent = this.endPaintEvent.bind(this);
+    
     this.convertToBlob = this.convertToBlob.bind(this);
     //mobile
     this.onTouchStart= this.onTouchStart.bind(this);
@@ -21,6 +22,7 @@ class Canvas extends Component {
 
   //COLOR PICKER
   state = {
+    drawing: null,
     displayColorPicker: false,
     color: "#000"
   };
@@ -35,6 +37,32 @@ class Canvas extends Component {
   
   handleChange = (color) => {
     this.setState({ color: color.hex })
+  };
+
+  convertToBlob = () => {
+    // this.setState({ drawing: this.canvas.toBlob(blob)})
+    // console.log(this.state.color);
+    // let img = new Image();
+    
+    let blobData = this.canvas.toBlob(function(blob) {
+      console.log(blob);
+      return;
+      // return blob;
+      // blobData = new Blob([blob]);
+      // setState({ drawing: blob })
+      // const jsonSample = '{ "word": "cat", "players": [1, 2, 3], "drawings": [], "guesses": [] }';
+      // const jsonData = JSON.parse(jsonSample);
+      // jsonData.drawings.push(blob);
+      // console.log(jsonData);
+      // const blobURL = URL.createObjectURL(jsonData.drawings[0]);
+      // img.src = blobURL;
+      // document.body.appendChild(img);
+    }, "image/png", 0.75);
+    return blobData;
+    // this.setState({ drawing: blobData});
+    // console.log("blob data", blobData);
+    // console.log(this.state);
+    // console.log(this.state.drawing);
   };
   //COLOR PICKER END
   
@@ -127,20 +155,6 @@ class Canvas extends Component {
     this.prevPos = { clientX, clientY };
   }
 
-
-  convertToBlob() {
-    console.log(this.state.color);
-    let img = new Image();
-    this.canvas.toBlob(function(blob) {
-      const jsonSample = '{ "word": "cat", "players": [1, 2, 3], "drawings": [], "guesses": [] }';
-      const jsonData = JSON.parse(jsonSample);
-      jsonData.drawings.push(blob);
-      console.log(jsonData);
-      const blobURL = URL.createObjectURL(jsonData.drawings[0]);
-      img.src = blobURL;
-      document.body.appendChild(img);
-    }, "image/png", 0.75);
-  }
 
   componentDidMount() {
     // Prevent scrolling when touching the canvas: mobile

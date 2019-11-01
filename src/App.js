@@ -12,6 +12,8 @@ const io = require('socket.io-client');
 function App() {
 
   // var socket = io('http://localhost:8080');
+  const canvasData = useRef(null);
+  // console.log(canvasData.current.convertToBlob());
   const { current: socket } = useRef(io('http://localhost:8080'));
   
   const [state, setState] = useState({
@@ -25,6 +27,7 @@ function App() {
     ready: [],
     round: null,
     gameID: null,
+    drawing: null
   });
 
   
@@ -181,7 +184,7 @@ function App() {
       {state.phase === "draw" && !state.hostMachine &&//Draw Phase
       <Fragment>
         <h3 style={{ textAlign: 'center' }}>Draw this: {state.prompt}</h3>
-        <Canvas />
+        <Canvas ref={ref => canvasData.current = ref }/>
       </Fragment>
       }
 
