@@ -174,12 +174,14 @@ io.on('connection', function (socket) {
 
     }).then((res) => {
       return db.query(`
-      SELECT info FROM prompts
+      SELECT info, id FROM prompts
       WHERE game_id = (SELECT id FROM games WHERE games.room_id = (SELECT id FROM rooms WHERE code = $1));
       `, [room])
     }).then((res) => {
+      // console.log("this is adding id value", res.rows)
       let wordArray = [];
       let positionArray = [];
+      let idArray = [];
       for(let i = 0; i < res.rows.length; i++) {
         // const infoData = JSON.parse(res.rows[i].info);
         // console.log(res.rows[i].info);
@@ -187,11 +189,12 @@ io.on('connection', function (socket) {
         // console.log(jsonData);
         wordArray.push(jsonData.word)
         positionArray.push(jsonData.queue[0])
+        idArray.push(res.rows[i].id)
       }
       // console.log("these are the arrays", wordArray, positionArray)
       let finalArray = [];
       for(let i = 0; i < wordArray.length; i++) {
-        finalArray.push([wordArray[i], positionArray[i]]);
+        finalArray.push([wordArray[i], positionArray[i], idArray[i]]);
       }
       console.log(finalArray);
       io.in(room).emit('startGame', finalArray)
@@ -203,15 +206,15 @@ io.on('connection', function (socket) {
     
   });
 
-  socket.on('nextRound', function(game, round, room){
-    console.log("Testing game and round here", game, round)
-    socket.to(room).emit('nextRound', game, round)
+  // socket.on('nextRound', function(game, round, room){
+  //   console.log("Testing game and round here", game, round)
+  //   socket.to(room).emit('nextRound', game, round)
 
-  })
+  // })
 
-  socket.on('clientNextRound', function(game, round, prompt, blob) {
+  // socket.on('clientNextRound', function(game, round, prompt, blob) {
     
-  })
+  // })
 
 });
 
