@@ -197,14 +197,27 @@ io.on('connection', function (socket) {
       io.in(room).emit('startGame', finalArray)
       //socket.to(room).emit('startGame', finalArray);
     })
-    
     .catch((err) => {
       console.log(err)
     })
     
   });
 
-  // socket.on('nextRound', function(game, round))
+  socket.on('nextRound', function(game, round, blob, prompt){
+    db.query(`
+      SELECT info FROM prompts 
+      WHERE game_id = $1
+    `, [game])
+    .then((res) => {
+      
+      let jsonInfo = res.rows[0].info
+      JSON.parse(jsonInfo)
+      jsonInfo.drawings.push(blob)
+
+
+    })
+
+  })
 
 });
 
