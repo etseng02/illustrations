@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect, useRef } from 'react';
 import './App.css';
 import Canvas from './components/Canvas'
 import Button from './components/Button'
@@ -11,14 +11,14 @@ const io = require('socket.io-client');
 
 function App() {
 
-  var socket = io('http://localhost:8080');
-
+  // var socket = io('http://localhost:8080');
+  const { current: socket } = useRef(io('http://localhost:8080'));
   
   const [state, setState] = useState({
     roomID: "",
     name: "",
     playerPosition: null,
-    keyword: "",
+    prompt: "",
     hostMachine: false,
     phase: "",
     players:[],
@@ -26,20 +26,6 @@ function App() {
     round: null,
   });
 
-  //call this function with the number of players
-  //IE: generatePlayersArray(players.count()) or something similar
-  // function generatePlayersArray(size, startAt = 1) {
-  //   const players = [...Array(size).keys()].map(i => i + startAt)
-  //   players.unshift(players.pop())
-  //   players.forEach(() => {
-  //      players.push(players.shift())
-  //      //THIS IS WHERE WE WILL ADD PLAYERS ARRAY INTO JSON
-  //   });
-  // }
-
-  function enterRoom(name, room){
-    setState({ ...state, name: name, roomID: room });
-  }
   
   const generateRandomString = function() {
     const possibleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -50,6 +36,10 @@ function App() {
     return newShortURL;
   };
 
+  function enterRoom(name, room){
+    setState({ ...state, name: name, roomID: room });
+  }
+  
   function createRoom(){
     let roomCode = generateRandomString()
     socket.emit('createRoom', { roomCode: `${roomCode}` });
@@ -67,22 +57,16 @@ function App() {
   }
 
   useEffect(() => {
-    socket.on('system', function (data) {
-      //console.log(data);
-    });
-  })
-
-  useEffect(() => {
     socket.on('hostMode', function (player) {
       //console.log(player)
       setState(prevState => ({ ...prevState, players: [ ...prevState.players, player] }))
       //console.log(state.players)
     });
-  }, )
+  }, [state.players])
 
   useEffect(() =>{
     socket.on('Ready', function (name) {
-      console.log("I have received a message")
+      //console.log("I have received a message")
       if (state.ready.includes(name)){
         //do nothing
         console.log("the ready player is already in ready state")
@@ -90,27 +74,37 @@ function App() {
           setState(prevState => ({ ...prevState, ready: [ ...prevState.ready, name] }))
       }
     });
-  })
+  },[state.ready])
 
   useEffect(()=>{
-    socket.on('startGame', function (data) {
+  //   console.log('HOOK REDEFINED', state);
+    socket.on('startGame', (data) => {
       console.log("starting game command has been issued")
       console.log("this is the data received:",data)
-        setState(prevState => ({ ...prevState, round: 0 }))
+      console.log("thats the state son:",state)
+      data.forEach((wordPair)=>{
+        console.log(wordPair, state.playerPosition)
+        if (wordPair[1] === state.playerPosition) {
+          console.log('MATCHED!!!');
+          setState(prevState => ({ ...prevState, round: 0, prompt: wordPair[0]}))
+        } else {
+          console.log('DID NOT MATCH', wordPair[1], state.playerPosition);
+        }
+      })
     });
   })
 
   useEffect(()=>{
     socket.on('joinRoom', function (name, position) {
-      //console.log(`Receiving a player position for ${name} and assigning ${position}`)
-      //console.log ("this is the client name: ", state.name)
-      //console.log ("this is the server name: ", name)
+      console.log(`Receiving a player position for ${name} and assigning ${position}`)
+      console.log ("this is the client name: ", state.name)
+      console.log ("this is the server name: ", name)
       if (name === state.name){
         console.log("the position has been assigned", position)
         setState(prevState => ({ ...prevState, playerPosition: position }))
         }
     });
-  })
+  }, [state.players])
 
   useEffect(()=>{
     if (state.name){
