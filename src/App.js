@@ -24,6 +24,7 @@ function App() {
     players:[],
     ready: [],
     round: null,
+    gameID: null,
   });
 
   
@@ -49,6 +50,8 @@ function App() {
   }
 
   function startGame(){
+    setState(prevState => ({ ...prevState, round: 0 }))
+
     socket.emit('startGame', state.roomID);
   }
 
@@ -143,6 +146,16 @@ function App() {
       }
     }
   },[state.round])
+
+  useEffect(()=>{
+    socket.on('game', function (game) {
+      setState(prevState => ({ ...prevState, gameID: game }))
+
+    });
+    return () => {
+      socket.off('game')
+    }
+  },[])
 
   
 
