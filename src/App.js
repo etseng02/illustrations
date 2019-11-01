@@ -166,7 +166,7 @@ function App() {
 
   function nextRound() {
     console.log("next round command has been sent")
-    socket.emit('nextRound', state.gameID, state.round, );
+    socket.emit('nextRound', state.gameID, state.round, state.room);
   }
 
   
