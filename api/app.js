@@ -134,7 +134,11 @@ io.on('connection', function (socket) {
     db.query(`
       INSERT INTO games (room_id)
       VALUES ((SELECT rooms.id FROM rooms WHERE rooms.code = $1))
+      RETURNING games.id;
       `, [room])
+      .then((res) => {
+        socket.to(room).emit('game', res.rows[0].id)
+      })
 
     .then((res) => {
       return db.query(`
@@ -198,6 +202,8 @@ io.on('connection', function (socket) {
     })
     
   });
+
+  // socket.on('nextRound', function(room, round))
 
 });
 
