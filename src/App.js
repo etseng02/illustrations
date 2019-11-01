@@ -64,6 +64,11 @@ function App() {
       setState(prevState => ({ ...prevState, players: [ ...prevState.players, player] }))
       //console.log(state.players)
     });
+
+    return () => {
+      socket.off('hostMode')
+    }
+
   }, [])
 
   useEffect(() =>{
@@ -93,6 +98,10 @@ function App() {
           // console.log('DID NOT MATCH', wordPair[1], state.playerPosition);
         }
       })
+      console.log(state.hostMachine)
+      if (state.hostMachine === true) {
+        setState(prevState => ({ ...prevState, round: 0}))
+      }
     });
 
     return () => {
