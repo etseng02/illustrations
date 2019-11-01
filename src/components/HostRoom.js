@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 import Button from './Button'
 
 export default function HostRoom({ ready = "", players = [], phase = "", roomID, onClick }) {
@@ -7,7 +7,7 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
   // const [players] = useState(props.players || "");
   // const [statePhase, setPhase] = useState(props.phase || "");
 
-  let readyPlayers = players.filter(element => ready.includes(element));
+  //let readyPlayers = players.filter(element => ready.includes(element));
 
   return (
     <Fragment>
