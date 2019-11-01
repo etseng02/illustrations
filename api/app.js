@@ -137,7 +137,7 @@ io.on('connection', function (socket) {
       RETURNING games.id;
       `, [room])
       .then((res) => {
-        socket.to(room).emit('game', res.rows[0].id)
+        io.in(room).emit('game', res.rows[0].id)
       })
 
     .then((res) => {
