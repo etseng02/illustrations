@@ -208,8 +208,48 @@ io.on('connection', function (socket) {
 
   socket.on('nextRound', function(game, round, room){
     //console.log("Testing game and round here", game, round, room)
-    socket.to(room).emit('nextRound', game, round)
+    console.log("this is the round number", round)
+    if (round === 0) {
+      socket.to(room).emit('nextRound', game, round)
+    } else {
+      socket.to(room).emit('nextRound', game, round)
+    }
 
+    setTimeout(() => 
+
+      db.query(`
+      SELECT info, id FROM prompts
+      WHERE game_id = $1;
+      `, [game])
+      .then((res) => {
+        console.log("this is the response", res.rows)
+        let infoArray = res.rows;
+        let submissionData = [];
+
+        if (round % 2 === 0) {
+          for (let i = 0; i < infoArray.length; i++) {
+            console.log("this should be the word", infoArray[i].info.word)
+            let jsonInfo = infoArray[i].info
+            let drawingsLength = jsonInfo.drawings.length - 1;
+            submissionData.push([jsonInfo.drawings[drawingsLength], infoArray[i].id, round])
+          }
+          console.log(submissionData)
+          round = round + 1;
+          return submissionData;
+          
+        } else {
+          for (let i = 0; i < infoArray.length; i++) {
+            let jsonInfo = JSON.parse(infoArray[i].info)
+            let guessesLength = jsonInfo.guesses.length - 1;
+            submissionData.push([jsonInfo.guesses[guessesLength], infoArray[i].id, round])
+          }
+          round = round + 1;
+          return submissionData;
+        }
+    }).catch((err) => {
+      console.error
+    }), 5000) 
+    
   })
 
   // socket.on('clientNextRound', function(game, round, prompt, blob) {
@@ -217,8 +257,28 @@ io.on('connection', function (socket) {
   // })
   socket.on('storeInfo', function(promptID, gameID, content, round){
     //console.log("Testing game and round here", game, round, room)
-    console.log("Content received", promptID, content, gameID, round)
-
+    // console.log("Content received", promptID, content, gameID, round)
+    db.query(`
+      SELECT info FROM prompts
+      WHERE prompts.id = $1
+    `, [promptID])
+    .then((res) => {
+      // console.log(res.rows)
+      let jsonInfo = JSON.parse(res.rows[0].info)
+      if(round % 2 === 0) {
+        jsonInfo.drawings.push(content)
+      } else{
+        jsonInfo.guesses.push(content)
+      } 
+      db.query(`
+        UPDATE prompts
+        SET info = $1
+        WHERE prompts.id = $2
+      `, [JSON.stringify(jsonInfo), promptID])
+    })
+    .catch((err) => {
+      console.error(err);
+    })
   })
 
 
