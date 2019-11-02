@@ -200,6 +200,11 @@ function App() {
     canvasData.current.convertToBlob();
   };
 
+  function convertToImage(blob) {
+    const blobUrl = URL.createObjectURL(blob);
+    return blobUrl;
+  };
+
   useEffect(()=>{
     if (state.round % 2 === 0 && state.drawing){
       console.log("the drawing state has been set")
