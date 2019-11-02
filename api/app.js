@@ -183,10 +183,8 @@ io.on('connection', function (socket) {
       let positionArray = [];
       let idArray = [];
       for(let i = 0; i < res.rows.length; i++) {
-        // const infoData = JSON.parse(res.rows[i].info);
-        // console.log(res.rows[i].info);
+
         let jsonData = JSON.parse(res.rows[i].info);
-        // console.log(jsonData);
         wordArray.push(jsonData.word)
         positionArray.push(jsonData.queue[0])
         idArray.push(res.rows[i].id)
@@ -205,6 +203,8 @@ io.on('connection', function (socket) {
     })
     
   });
+
+
 
   socket.on('nextRound', function(game, round, room){
     //console.log("Testing game and round here", game, round, room)
@@ -227,27 +227,29 @@ io.on('connection', function (socket) {
         let submissionData = [];
 
         if (round % 2 === 0) {
+          round = round + 1;
           for (let i = 0; i < infoArray.length; i++) {
-            console.log("this should be the word", infoArray[i].info.word)
+            // why does this not need to be parsed?
             let jsonInfo = infoArray[i].info
             let drawingsLength = jsonInfo.drawings.length - 1;
             submissionData.push([jsonInfo.drawings[drawingsLength], infoArray[i].id, round])
           }
           console.log(submissionData)
-          round = round + 1;
+          io.in(room).emit('nextRoundInfo', submissionData)
           return submissionData;
           
         } else {
+          round = round + 1;
           for (let i = 0; i < infoArray.length; i++) {
             let jsonInfo = JSON.parse(infoArray[i].info)
             let guessesLength = jsonInfo.guesses.length - 1;
             submissionData.push([jsonInfo.guesses[guessesLength], infoArray[i].id, round])
           }
-          round = round + 1;
+          io.in(room).emit('nextRoundInfo', submissionData)
           return submissionData;
         }
     }).catch((err) => {
-      console.error
+      console.error(err)
     }), 5000) 
     
   })
