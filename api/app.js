@@ -263,12 +263,14 @@ io.on('connection', function (socket) {
   socket.on('storeInfo', function(promptID, gameID, content, round){
     //console.log("Testing game and round here", game, round, room)
     // console.log("Content received", promptID, content, gameID, round)
+    console.log("this is the ocntent", content);
     db.query(`
       SELECT info FROM prompts
       WHERE prompts.id = $1
     `, [promptID])
     .then((res) => {
       // console.log(res.rows)
+      console.log(res.rows[0]);
       let jsonInfo = JSON.parse(res.rows[0].info)
       if(round % 2 === 0) {
         jsonInfo.drawings.push(content)
@@ -280,6 +282,7 @@ io.on('connection', function (socket) {
         SET info = $1
         WHERE prompts.id = $2
       `, [JSON.stringify(jsonInfo), promptID])
+      // console.log("this is th json object", jsonInfo)
     })
     .catch((err) => {
       console.error(err);

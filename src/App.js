@@ -201,13 +201,24 @@ function App() {
   
   const onButtonClick = () => {
     canvasData.current.convertToBlob();
+    console.log("statedrawing", state.drawing);
+    // const imageSource = URL.createObjectURL(state.drawing);
+    // const container = document.getElementById("imageContainer");
+    // const img = new Image();
+    // img.src = imageSource;
+    // document.body.appendChild(img);
   };
 
   function convertToImage(blob) {
-    const blobUrl = URL.createObjectURL(blob);
-    return blobUrl;
+    const arrayBufferView = new Uint8Array(blob.data);
+    console.log("this is the array buffer", arrayBufferView)
+    const blobData = new Blob([arrayBufferView], { type: "image/png" });
+    console.log("this is the blob", blobData);
+    const imageUrl = URL.createObjectURL(blobData);
+    return imageUrl;
+    // console.log("this is the array buffer", blob, blob.data, blob.type)
   };
-
+  
   useEffect(()=>{
     if (state.round % 2 === 0 && state.drawing){
       console.log("the drawing state has been set")
@@ -271,15 +282,14 @@ function App() {
         <h3 style={{ textAlign: 'center' }}>Draw this: {state.prompt}</h3>
         <Canvas ref={ref => canvasData.current = ref }
                 onData={(data) => holdIt(data)} />
-        <button onClick={onButtonClick}>>??????</button>
       </Fragment>
       }
 
       {state.phase === "guess" && !state.hostMachine &&//Guess Phase
         <Fragment>
-          <Guess
+          <Guess imageSource={convertToImage(state.drawing)}
           />
-
+          <img src={convertToImage(state.drawing)}></img>
         </Fragment>
       }
       
