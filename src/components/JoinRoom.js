@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import Button from './Button'
+import "./JoinRoom.css";
 
 export default function JoinRoom(props) {
 
