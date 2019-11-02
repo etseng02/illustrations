@@ -214,7 +214,41 @@ io.on('connection', function (socket) {
     } else {
       socket.to(room).emit('nextRound', game, round)
     }
-    
+
+    setTimeout(() => 
+
+      db.query(`
+      SELECT info, id FROM prompts
+      WHERE game_id = $1;
+      `, [game])
+      .then((res) => {
+        console.log(res.rows)
+        let infoArray = res.rows;
+        let submissionData = [];
+
+        if (round % 2 === 0) {
+          for (let i = 0; i < infoArray.length; i++) {
+            console.log(infoArray[i])
+            let jsonInfo = JSON.parse(infoArray[i].info)
+            let drawingsLength = jsonInfo.drawings.length - 1;
+            submissionData.push([jsonInfo.drawings[drawingsLength], infoArray[i].id, round])
+          }
+          console.log(submissionData)
+          round = round + 1;
+          return submissionData;
+          
+        } else {
+          for (let i = 0; i < infoArray.length; i++) {
+            let jsonInfo = JSON.parse(infoArray[i].info)
+            let guessesLength = jsonInfo.guesses.length - 1;
+            submissionData.push([jsonInfo.guesses[guessesLength], infoArray[i].id, round])
+          }
+          round = round + 1;
+          return submissionData;
+        }
+    }).catch((err) => {
+      console.error(err)
+    }), 5000) 
     
   })
 
