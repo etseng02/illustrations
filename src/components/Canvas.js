@@ -65,7 +65,7 @@ class Canvas extends Component {
   // }
 
   onMouseDown({ nativeEvent }) {
-    console.log(">>>", this.state.color);
+    //console.log(">>>", this.state.color);
     this.setState({ displayColorPicker: false });
     this.userStrokeStyle = this.state.color;
     const { clientX, clientY } = nativeEvent;

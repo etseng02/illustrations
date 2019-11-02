@@ -27,7 +27,8 @@ function App() {
     ready: [],
     round: null,
     gameID: null,
-    drawing: null
+    drawing: null,
+    promptID: null,
   });
 
   
@@ -99,7 +100,7 @@ function App() {
         // console.log(wordPair, state.playerPosition)
         if (wordPair[1] === state.playerPosition) {
           // console.log('MATCHED!!!');
-          setState(prevState => ({ ...prevState, round: 0, prompt: wordPair[0]}))
+          setState(prevState => ({ ...prevState, round: 0, prompt: wordPair[0], promptID: wordPair[2]}))
         } else {
           // console.log('DID NOT MATCH', wordPair[1], state.playerPosition);
         }
@@ -164,7 +165,7 @@ function App() {
     setState(prevState => ({ ...prevState, drawing: data}))
 
   }
-  console.log("drawing", state)
+
   
   useEffect(()=>{
     socket.on('nextRound', function (game, round) {
@@ -174,7 +175,7 @@ function App() {
           canvasData.current.convertToBlob();
           // console.log(holdIt());
           // const imageArray = canvasData.current.convertToBlob();
-          console.log("this is the state drawing", state);
+          //console.log("this is the state drawing", state);
           console.log("this round is even! setting next round!")
         }
       //setState(prevState => ({ ...prevState, gameID: game }))
@@ -198,6 +199,25 @@ function App() {
   const onButtonClick = () => {
     canvasData.current.convertToBlob();
   };
+
+  useEffect(()=>{
+    if (state.round % 2 === 0 && state.drawing){
+      console.log("the drawing state has been set")
+      console.log("emitting the following", state.promptID, state.gameID, state.drawing, state.gameID, state.round)
+      socket.emit('storeInfo', state.promptID, state.gameID, state.drawing, state.gameID, state.round);
+      //setState(prevState => ({ ...prevState, drawing: null}))
+    }
+    if (state.round % 3 === 0 && state.drawing){
+    console.log("the drawing state has been set for guess phase")
+    // console.log("the drawing")
+    //socket.emit('storeInfo', state.gameID, state.drawing, state.gameID, state.round);
+    }
+    if (state.drawing === null) {
+      console.log("there is no drawing son!")
+    }
+
+
+  },[state.drawing])
   
   return (
     <Fragment>
