@@ -230,9 +230,11 @@ io.on('connection', function (socket) {
           round = round + 1;
           for (let i = 0; i < infoArray.length; i++) {
             // why does this not need to be parsed?
+            let infoQueue = infoArray[i].info.queue
+            console.log(infoQueue)
             let jsonInfo = infoArray[i].info
             let drawingsLength = jsonInfo.drawings.length - 1;
-            submissionData.push([jsonInfo.drawings[drawingsLength], infoArray[i].id, round])
+            submissionData.push([jsonInfo.drawings[drawingsLength], infoArray[i].id, round, infoQueue[round]])
           }
           console.log(submissionData)
           io.in(room).emit('nextRoundInfo', submissionData)
@@ -241,9 +243,10 @@ io.on('connection', function (socket) {
         } else {
           round = round + 1;
           for (let i = 0; i < infoArray.length; i++) {
-            let jsonInfo = JSON.parse(infoArray[i].info)
+            let jsonInfo = infoArray[i].info
+            let infoQueue = infoArray[i].info.queue
             let guessesLength = jsonInfo.guesses.length - 1;
-            submissionData.push([jsonInfo.guesses[guessesLength], infoArray[i].id, round])
+            submissionData.push([jsonInfo.guesses[guessesLength], infoArray[i].id, round, infoQueue[round]])
           }
           io.in(room).emit('nextRoundInfo', submissionData)
           return submissionData;

@@ -6,6 +6,7 @@ import JoinRoom from './components/JoinRoom'
 import HostRoom from './components/HostRoom'
 import Waiting from './components/Waiting'
 import Header from './components/Header'
+import Guess from './components/Guess'
 const io = require('socket.io-client');
 
 
@@ -147,6 +148,8 @@ function App() {
       console.log("the round state has changed")
       if (state.round % 2 == 0) {
         setState(prevState => ({ ...prevState, phase: "draw" }))
+      } else {
+        setState(prevState => ({ ...prevState, phase: "guess" }))
       }
     }
   },[state.round])
@@ -220,9 +223,19 @@ function App() {
     if (state.drawing === null) {
       console.log("there is no drawing son!")
     }
-
-
   },[state.drawing])
+
+  useEffect(()=>{
+    socket.on('nextRoundInfo', function (submissionData) { //content, promptID, roundID  received in array of arrays.
+      console.log("I have received the content to start the next round", submissionData)
+
+    
+    return () => {
+      socket.off('nextRoundInfo')
+    }
+  })
+  },[])
+
   
   return (
     <Fragment>
@@ -240,6 +253,14 @@ function App() {
         <button onClick={onButtonClick}>>??????</button>
       </Fragment>
       }
+
+      {state.phase === "guess" && !state.hostMachine &&//Guess Phase
+        <Fragment>
+          <Guess/>
+
+        </Fragment>
+      }
+      
 
       {state.roomID && state.hostMachine &&
       <Fragment>
