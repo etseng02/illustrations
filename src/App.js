@@ -28,11 +28,7 @@ function App() {
     round: null,
     gameID: null,
     drawing: null,
-<<<<<<< HEAD
-    promptID: null
-=======
     promptID: null,
->>>>>>> master
   });
 
   
@@ -208,7 +204,7 @@ function App() {
     if (state.round % 2 === 0 && state.drawing){
       console.log("the drawing state has been set")
       console.log("emitting the following", state.promptID, state.gameID, state.drawing, state.gameID, state.round)
-      socket.emit('storeInfo', state.promptID, state.gameID, state.drawing, state.gameID, state.round);
+      socket.emit('storeInfo', state.promptID, state.gameID, state.drawing, state.round);
       //setState(prevState => ({ ...prevState, drawing: null}))
     }
     if (state.round % 3 === 0 && state.drawing){

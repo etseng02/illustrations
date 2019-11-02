@@ -215,7 +215,7 @@ io.on('connection', function (socket) {
   // socket.on('clientNextRound', function(game, round, prompt, blob) {
     
   // })
-  socket.on('storeInfo', function(promptID, content, gameID, round){
+  socket.on('storeInfo', function(promptID, gameID, content, round){
     //console.log("Testing game and round here", game, round, room)
     console.log("Content received", promptID, content, gameID, round)
 
