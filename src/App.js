@@ -28,7 +28,11 @@ function App() {
     round: null,
     gameID: null,
     drawing: null,
+<<<<<<< HEAD
     promptID: null
+=======
+    promptID: null,
+>>>>>>> master
   });
 
   
@@ -161,12 +165,21 @@ function App() {
     }
   },[])
 
+  function holdIt(data) {
+    setState(prevState => ({ ...prevState, drawing: data}))
+
+  }
+
+  
   useEffect(()=>{
     socket.on('nextRound', function (game, round) {
       console.log("received a message for next round ", game, round)
       if (round % 2 === 0)
         {
-          console.log(canvasData.current.convertToBlob());
+          canvasData.current.convertToBlob();
+          // console.log(holdIt());
+          // const imageArray = canvasData.current.convertToBlob();
+          //console.log("this is the state drawing", state);
           console.log("this round is even! setting next round!")
         }
       //setState(prevState => ({ ...prevState, gameID: game }))
@@ -174,23 +187,41 @@ function App() {
     return () => {
       socket.off('nextRound')
     }
-  },[])
-
-  
+  },[state])
   
   //delete later this is for testing purposes
   function draw() {
     setState({ ...state, phase: "draw" })
   }
   
-  function nextRound() {
+  function nextRound(data) {
     console.log("next round command has been sent")
+    console.log("asdasdas", data);
     socket.emit('nextRound', state.gameID, state.round, state.roomID);
   }
   
   const onButtonClick = () => {
     canvasData.current.convertToBlob();
   };
+
+  useEffect(()=>{
+    if (state.round % 2 === 0 && state.drawing){
+      console.log("the drawing state has been set")
+      console.log("emitting the following", state.promptID, state.gameID, state.drawing, state.gameID, state.round)
+      socket.emit('storeInfo', state.promptID, state.gameID, state.drawing, state.gameID, state.round);
+      //setState(prevState => ({ ...prevState, drawing: null}))
+    }
+    if (state.round % 3 === 0 && state.drawing){
+    console.log("the drawing state has been set for guess phase")
+    // console.log("the drawing")
+    //socket.emit('storeInfo', state.gameID, state.drawing, state.gameID, state.round);
+    }
+    if (state.drawing === null) {
+      console.log("there is no drawing son!")
+    }
+
+
+  },[state.drawing])
   
   return (
     <Fragment>
@@ -204,7 +235,7 @@ function App() {
       <Fragment>
         <h3 style={{ textAlign: 'center' }}>Draw this: {state.prompt}</h3>
         <Canvas ref={ref => canvasData.current = ref }
-                onData={(data) => console.log("parent", data)} />
+                onData={(data) => holdIt(data)} />
         <button onClick={onButtonClick}>>??????</button>
       </Fragment>
       }

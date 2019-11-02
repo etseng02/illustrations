@@ -207,7 +207,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('nextRound', function(game, round, room){
-    console.log("Testing game and round here", game, round, room)
+    //console.log("Testing game and round here", game, round, room)
     socket.to(room).emit('nextRound', game, round)
 
   })
@@ -215,6 +215,12 @@ io.on('connection', function (socket) {
   // socket.on('clientNextRound', function(game, round, prompt, blob) {
     
   // })
+  socket.on('storeInfo', function(promptID, content, gameID, round){
+    //console.log("Testing game and round here", game, round, room)
+    console.log("Content received", promptID, content, gameID, round)
+
+  })
+
 
 });
 
