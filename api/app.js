@@ -222,14 +222,14 @@ io.on('connection', function (socket) {
       WHERE game_id = $1;
       `, [game])
       .then((res) => {
-        console.log(res.rows)
+        console.log("this is the response", res.rows)
         let infoArray = res.rows;
         let submissionData = [];
 
         if (round % 2 === 0) {
           for (let i = 0; i < infoArray.length; i++) {
-            console.log(infoArray[i])
-            let jsonInfo = JSON.parse(infoArray[i].info)
+            console.log("this should be the word", infoArray[i].info.word)
+            let jsonInfo = infoArray[i].info
             let drawingsLength = jsonInfo.drawings.length - 1;
             submissionData.push([jsonInfo.drawings[drawingsLength], infoArray[i].id, round])
           }
@@ -247,7 +247,7 @@ io.on('connection', function (socket) {
           return submissionData;
         }
     }).catch((err) => {
-      console.error(err)
+      console.error
     }), 5000) 
     
   })
