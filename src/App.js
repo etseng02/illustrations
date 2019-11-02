@@ -27,7 +27,8 @@ function App() {
     ready: [],
     round: null,
     gameID: null,
-    drawing: null
+    drawing: null,
+    promptID: null
   });
 
   
@@ -99,7 +100,7 @@ function App() {
         // console.log(wordPair, state.playerPosition)
         if (wordPair[1] === state.playerPosition) {
           // console.log('MATCHED!!!');
-          setState(prevState => ({ ...prevState, round: 0, prompt: wordPair[0]}))
+          setState(prevState => ({ ...prevState, round: 0, prompt: wordPair[0], promptID: wordPair[2]}))
         } else {
           // console.log('DID NOT MATCH', wordPair[1], state.playerPosition);
         }
