@@ -223,9 +223,19 @@ function App() {
     if (state.drawing === null) {
       console.log("there is no drawing son!")
     }
-
-
   },[state.drawing])
+
+  useEffect(()=>{
+    socket.on('nextRoundInfo', function (submissionData) { //content, promptID, roundID  received in array of arrays.
+      console.log("I have received the content to start the next round", submissionData)
+
+    
+    return () => {
+      socket.off('nextRoundInfo')
+    }
+  })
+  },[])
+
   
   return (
     <Fragment>
