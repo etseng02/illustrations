@@ -212,12 +212,9 @@ function App() {
 
   function convertToImage(blob) {
     const arrayBufferView = new Uint8Array(blob.data);
-    console.log("this is the array buffer", arrayBufferView)
     const blobData = new Blob([arrayBufferView], { type: "image/png" });
-    console.log("this is the blob", blobData);
     const imageUrl = URL.createObjectURL(blobData);
     return imageUrl;
-    // console.log("this is the array buffer", blob, blob.data, blob.type)
   };
   
   useEffect(()=>{
@@ -290,7 +287,6 @@ function App() {
         <Fragment>
           <Guess imageSource={convertToImage(state.drawing)}
           />
-          <img src={convertToImage(state.drawing)}></img>
         </Fragment>
       }
       

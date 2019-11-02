@@ -42,14 +42,7 @@ class Canvas extends Component {
   convertToBlob() {
     this.canvas.toBlob((blob) =>  {
       this.props.onData(blob);
-      // blob.arrayBuffer().then((data) => {
-      //   console.log(">", data);
-      //   this.props.onData(data);
-      // }).catch((err) => {
-      //   console.error(err);
-      // })
     }, "image/png", 0.75);
-    // console.log(blobDta);
   };
   //COLOR PICKER END
   
