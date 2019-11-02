@@ -160,12 +160,21 @@ function App() {
     }
   },[])
 
+  function holdIt(data) {
+    setState(prevState => ({ ...prevState, drawing: data}))
+
+  }
+  console.log("drawing", state)
+  
   useEffect(()=>{
     socket.on('nextRound', function (game, round) {
       console.log("received a message for next round ", game, round)
       if (round % 2 === 0)
         {
-          console.log(canvasData.current.convertToBlob());
+          canvasData.current.convertToBlob();
+          // console.log(holdIt());
+          // const imageArray = canvasData.current.convertToBlob();
+          console.log("this is the state drawing", state);
           console.log("this round is even! setting next round!")
         }
       //setState(prevState => ({ ...prevState, gameID: game }))
@@ -173,17 +182,16 @@ function App() {
     return () => {
       socket.off('nextRound')
     }
-  },[])
-
-  
+  },[state])
   
   //delete later this is for testing purposes
   function draw() {
     setState({ ...state, phase: "draw" })
   }
   
-  function nextRound() {
+  function nextRound(data) {
     console.log("next round command has been sent")
+    console.log("asdasdas", data);
     socket.emit('nextRound', state.gameID, state.round, state.roomID);
   }
   
@@ -203,7 +211,7 @@ function App() {
       <Fragment>
         <h3 style={{ textAlign: 'center' }}>Draw this: {state.prompt}</h3>
         <Canvas ref={ref => canvasData.current = ref }
-                onData={(data) => console.log("parent", data)} />
+                onData={(data) => holdIt(data)} />
         <button onClick={onButtonClick}>>??????</button>
       </Fragment>
       }

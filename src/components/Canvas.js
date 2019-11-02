@@ -41,9 +41,13 @@ class Canvas extends Component {
 
   convertToBlob() {
     this.canvas.toBlob((blob) =>  {
-      blob.arrayBuffer().then(data => {
-        this.props.onData(data);
-      })
+      this.props.onData(blob);
+      // blob.arrayBuffer().then((data) => {
+      //   console.log(">", data);
+      //   this.props.onData(data);
+      // }).catch((err) => {
+      //   console.error(err);
+      // })
     }, "image/png", 0.75);
     // console.log(blobDta);
   };
@@ -61,7 +65,6 @@ class Canvas extends Component {
   // }
 
   onMouseDown({ nativeEvent }) {
-    console.log(this.convertToBlob());
     console.log(">>>", this.state.color);
     this.setState({ displayColorPicker: false });
     this.userStrokeStyle = this.state.color;
