@@ -173,13 +173,14 @@ function App() {
   useEffect(()=>{
     socket.on('nextRound', function (game, round) {
       console.log("received a message for next round ", game, round)
-      if (round % 2 === 0)
-        {
+      console.log("this is the current round", state.round)
+      if (state.hostMachine === true) {
+        //do nothing
+      } else if (round % 2 === 0) {
           canvasData.current.convertToBlob();
-          // console.log(holdIt());
-          // const imageArray = canvasData.current.convertToBlob();
-          //console.log("this is the state drawing", state);
-          console.log("this round is even! setting next round!")
+          console.log("this round is even! setting next round to odd!")
+        } else {
+          console.log("this round is odd! setting next round to even!")
         }
       //setState(prevState => ({ ...prevState, gameID: game }))
     });

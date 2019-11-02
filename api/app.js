@@ -210,9 +210,9 @@ io.on('connection', function (socket) {
     //console.log("Testing game and round here", game, round, room)
     console.log("this is the round number", round)
     if (round === 0) {
-      socket.to(room).emit('nextRound', game, round)
+      io.in(room).emit('nextRound', game, round)
     } else {
-      socket.to(room).emit('nextRound', game, round)
+      io.in(room).emit('nextRound', game, round)
     }
 
     setTimeout(() => 
