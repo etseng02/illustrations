@@ -214,27 +214,48 @@ function App() {
       console.log("emitting the following", state.promptID, state.gameID, state.drawing, state.gameID, state.round)
       socket.emit('storeInfo', state.promptID, state.gameID, state.drawing, state.round);
       //setState(prevState => ({ ...prevState, drawing: null}))
-    }
-    if (state.round % 3 === 0 && state.drawing){
+    } else if (state.drawing === null) {
+      console.log("there is no drawing son!")
+    } else {
     console.log("the drawing state has been set for guess phase")
     // console.log("the drawing")
     //socket.emit('storeInfo', state.gameID, state.drawing, state.gameID, state.round);
     }
-    if (state.drawing === null) {
-      console.log("there is no drawing son!")
-    }
+
   },[state.drawing])
 
   useEffect(()=>{
-    socket.on('nextRoundInfo', function (submissionData) { //content, promptID, roundID  received in array of arrays.
+    socket.on('nextRoundInfo', function (submissionData) { //content, promptID, roundID, playerposition  received in array of arrays.
       console.log("I have received the content to start the next round", submissionData)
+      //console.log("player position: ", state.playerPosition)
+      //console.log("submission data player position: ", submissionData[3] )
+      if (submissionData){
+        console.log("submission data actuvated")
+      submissionData.forEach((wordPair)=>{
+        //console.log(wordPair[3])
+        // console.log(wordPair, state.playerPosition)
+        if (wordPair[3] === state.playerPosition) {
+          console.log('MATCHED!!!')
+          console.log("prompt:", wordPair[0])
+          console.log("promptID: ",wordPair[1])
+          console.log("round: ",wordPair[2])
 
-    
+          if (wordPair[2] % 2 === 0) {
+            setState(prevState => ({ ...prevState, prompt: wordPair[0], promptID: wordPair[1], round: wordPair[2]}))
+          } else {
+              setState(prevState => ({ ...prevState, drawing: wordPair[0], promptID: wordPair[1], round: wordPair[2]}))
+          }
+
+        } else {
+          // console.log('DID NOT MATCH', wordPair[1], state.playerPosition);
+        }
+      });
+    }
     return () => {
       socket.off('nextRoundInfo')
     }
   })
-  },[])
+  },[state.playerPosition])
 
   
   return (
@@ -256,7 +277,8 @@ function App() {
 
       {state.phase === "guess" && !state.hostMachine &&//Guess Phase
         <Fragment>
-          <Guess/>
+          <Guess
+          />
 
         </Fragment>
       }
