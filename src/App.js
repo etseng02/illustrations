@@ -14,6 +14,7 @@ function App() {
 
   // var socket = io('http://localhost:8080');
   const canvasData = useRef(null);
+  const retrieveGuess = useRef(null);
   // console.log(canvasData.current.convertToBlob());
   const { current: socket } = useRef(io('http://localhost:8080'));
   
@@ -291,8 +292,10 @@ function App() {
       {state.phase === "guess" && !state.hostMachine &&//Guess Phase
         <Fragment>
           <Guess
+          setGuess={setState}
+          
           imageSource={convertToImage(state.drawing)}
-          setGuess={""}
+          ref={ref => retrieveGuess.current = ref }
           />
         </Fragment>
       }
