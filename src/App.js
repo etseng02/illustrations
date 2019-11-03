@@ -264,7 +264,7 @@ function App() {
           if (wordPair[2] % 2 === 0) {
             setState(prevState => ({ ...prevState, prompt: wordPair[0], promptID: wordPair[1], round: wordPair[2]}))
           } else {
-              setState(prevState => ({ ...prevState, drawing: wordPair[0], promptID: wordPair[1], round: wordPair[2]}))
+            setState(prevState => ({ ...prevState, drawing: wordPair[0], promptID: wordPair[1], round: wordPair[2]}))
           }
 
         } else {
@@ -278,6 +278,16 @@ function App() {
   })
   },[state.playerPosition])
 
+  useEffect(()=>{
+    socket.on('endGame',function (submissionData) {
+      setState(prevState => ({ ...prevState, phase: "endgame"}))
+
+    })
+
+   },[])
+
+  
+
   
   return (
     <Fragment>
@@ -285,6 +295,13 @@ function App() {
         room = {state.roomID}
       >  
       </Header>
+
+      {state.phase === "endgame" && !state.hostMachine &&
+        <Fragment>
+          <h1>The Game has Ended</h1>
+          <h1>Check the Screen for results!</h1>
+        </Fragment>
+      }
 
 
       {state.phase === "draw" && !state.hostMachine &&//Draw Phase
@@ -324,9 +341,6 @@ function App() {
 
       {!state.roomID && !state.hostMachine &&//When roomID is falsy, Join room field, name field, and create room field will be rendered
         <Fragment>
-          <Button
-            onClick={draw}
-          >Draw Iceman</Button>
           <JoinRoom
             onClick={enterRoom}
           >

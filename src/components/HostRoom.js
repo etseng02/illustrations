@@ -28,6 +28,15 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
       </Fragment>
     }
 
+    {phase === "endgame" &&
+      <Fragment>
+        <h1>The game has ended</h1>
+
+
+      </Fragment>
+
+    }
+
     {phase === "" &&
     <Fragment>
       <h1>Room Code: {roomID}</h1>
