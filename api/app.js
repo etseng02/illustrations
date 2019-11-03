@@ -219,7 +219,7 @@ io.on('connection', function (socket) {
     console.log("this is the number of players", res.rows[0])
     let numberOfPlayers = res.rows[0].count
     // tells the client browsers to submit their data
-    socket.to(room).emit('nextRound', game, round)
+    io.in(room).emit('nextRound', game, round)
       console.log("THIS IS THE ROUND", round)
     if (round === (numberOfPlayers - 1)) {
       //it is the end of the game
@@ -277,7 +277,7 @@ io.on('connection', function (socket) {
         }).catch((err) => {
         //catching the error for the query inside the setTimeout
         console.error(err)
-      }), 5000) 
+      }), 3000) 
       // after set timeout
       //end of else statement
     }
@@ -301,11 +301,18 @@ io.on('connection', function (socket) {
     .then((res) => {
       // console.log(res.rows)
       // console.log(res.rows[0]);
-      let jsonInfo = JSON.parse(res.rows[0].info)
+      let jsonInfo = ''
+      if (round === 0 ) {
+        jsonInfo = JSON.parse(res.rows[0].info)
+      } else {
+        jsonInfo = res.rows[0].info
+      }
+      
       if(round % 2 === 0) {
         jsonInfo.drawings.push(content)
       } else{
         jsonInfo.guesses.push(content)
+        console.log(jsonInfo.guesses)
       } 
       db.query(`
         UPDATE prompts
