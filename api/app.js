@@ -194,7 +194,7 @@ io.on('connection', function (socket) {
       for(let i = 0; i < wordArray.length; i++) {
         finalArray.push([wordArray[i], positionArray[i], idArray[i]]);
       }
-      console.log(finalArray);
+      // console.log(finalArray);
       io.in(room).emit('startGame', finalArray)
       //socket.to(room).emit('startGame', finalArray);
     })
@@ -207,70 +207,97 @@ io.on('connection', function (socket) {
 
 
   socket.on('nextRound', function(game, round, room){
-    //console.log("Testing game and round here", game, round, room)
-    console.log("this is the round number", round)
-    if (round === 0) {
-      io.in(room).emit('nextRound', game, round)
-    } else {
-      io.in(room).emit('nextRound', game, round)
-    }
+    db.query(`
+    SELECT COUNT (id) FROM players
+    WHERE room_id = (SELECT id FROM rooms WHERE rooms.code = $1)
+    `, [room])
+    .then((res) => {
 
-    setTimeout(() => 
-
+    console.log("this is the number of players", res.rows[0])
+    let numberOfPlayers = res.rows[0].count
+    // tells the client browsers to submit their data
+    socket.to(room).emit('nextRound', game, round)
+      console.log("THIS IS THE ROUND", round)
+    if (round === (numberOfPlayers - 1)) {
+      //it is the end of the game
       db.query(`
-      SELECT info, id FROM prompts
-      WHERE game_id = $1;
+        SELECT * FROM prompts 
+        WHERE game_id = $1
       `, [game])
-      .then((res) => {
-        console.log("this is the response", res.rows)
-        let infoArray = res.rows;
-        let submissionData = [];
 
-        if (round % 2 === 0) {
-          round = round + 1;
-          for (let i = 0; i < infoArray.length; i++) {
-            // why does this not need to be parsed?
-            let infoQueue = infoArray[i].info.queue
-            console.log(infoQueue)
-            let jsonInfo = infoArray[i].info
-            let drawingsLength = jsonInfo.drawings.length - 1;
-            submissionData.push([jsonInfo.drawings[drawingsLength], infoArray[i].id, round, infoQueue[round]])
+      .then((res) => {
+        // console.log(res.rows)
+        let resultsArray = res.rows;
+        console.log("RESULTS ARRAY", resultsArray)
+        io.in(room).emit('endGame', resultsArray)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+      
+    } else {
+
+      setTimeout(() => 
+
+        db.query(`
+        SELECT info, id FROM prompts
+        WHERE game_id = $1;
+        `, [game])
+        .then((res) => {
+          // console.log("this is the response", res.rows)
+          let infoArray = res.rows;
+          let submissionData = [];
+
+          if (round % 2 === 0) {
+            round = round + 1;
+            for (let i = 0; i < infoArray.length; i++) {
+              // why does this not need to be parsed?
+              let infoQueue = infoArray[i].info.queue
+              let jsonInfo = infoArray[i].info
+              let drawingsLength = jsonInfo.drawings.length - 1;
+              submissionData.push([jsonInfo.drawings[drawingsLength], infoArray[i].id, round, infoQueue[round]])
+            }
+            io.in(room).emit('nextRoundInfo', submissionData)
+            return submissionData;
+            
+          } else {
+            round = round + 1;
+            for (let i = 0; i < infoArray.length; i++) {
+              let jsonInfo = infoArray[i].info
+              let infoQueue = infoArray[i].info.queue
+              let guessesLength = jsonInfo.guesses.length - 1;
+              submissionData.push([jsonInfo.guesses[guessesLength], infoArray[i].id, round, infoQueue[round]])
+            }
+            io.in(room).emit('nextRoundInfo', submissionData)
+            return submissionData;
           }
-          console.log(submissionData)
-          io.in(room).emit('nextRoundInfo', submissionData)
-          return submissionData;
-          
-        } else {
-          round = round + 1;
-          for (let i = 0; i < infoArray.length; i++) {
-            let jsonInfo = infoArray[i].info
-            let infoQueue = infoArray[i].info.queue
-            let guessesLength = jsonInfo.guesses.length - 1;
-            submissionData.push([jsonInfo.guesses[guessesLength], infoArray[i].id, round, infoQueue[round]])
-          }
-          io.in(room).emit('nextRoundInfo', submissionData)
-          return submissionData;
-        }
-    }).catch((err) => {
-      console.error(err)
-    }), 5000) 
+        }).catch((err) => {
+        //catching the error for the query inside the setTimeout
+        console.error(err)
+      }), 5000) 
+      // after set timeout
+      //end of else statement
+    }
+    //end of promise of the db.query counting the players
+    })
     
+    .catch((err) => {
+      //catching the error for the initial promise
+      console.error(err)
+    })
   })
 
-  // socket.on('clientNextRound', function(game, round, prompt, blob) {
-    
-  // })
   socket.on('storeInfo', function(promptID, gameID, content, round){
     //console.log("Testing game and round here", game, round, room)
     // console.log("Content received", promptID, content, gameID, round)
-    console.log("this is the ocntent", content);
+    // console.log("this is the ocntent", content);
     db.query(`
       SELECT info FROM prompts
       WHERE prompts.id = $1
     `, [promptID])
     .then((res) => {
       // console.log(res.rows)
-      console.log(res.rows[0]);
+      // console.log(res.rows[0]);
       let jsonInfo = JSON.parse(res.rows[0].info)
       if(round % 2 === 0) {
         jsonInfo.drawings.push(content)
