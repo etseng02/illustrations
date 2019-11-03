@@ -220,24 +220,27 @@ io.on('connection', function (socket) {
     let numberOfPlayers = res.rows[0].count
     // tells the client browsers to submit their data
     socket.to(room).emit('nextRound', game, round)
-      console.log("THIS IS THE ROUND", round)
+
+    console.log("THIS IS THE ROUND", round)
+
     if (round === (numberOfPlayers - 1)) {
       //it is the end of the game
-      db.query(`
-        SELECT * FROM prompts 
-        WHERE game_id = $1
-      `, [game])
+      setTimeout(() => 
+        db.query(`
+          SELECT * FROM prompts 
+          WHERE game_id = $1
+        `, [game])
 
-      .then((res) => {
-        // console.log(res.rows)
-        let resultsArray = res.rows;
-        console.log("RESULTS ARRAY", resultsArray)
-        io.in(room).emit('endGame', resultsArray)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-      
+        .then((res) => {
+          // console.log(res.rows)
+          let resultsArray = res.rows;
+          console.log("RESULTS ARRAY", resultsArray)
+          io.in(room).emit('endGame', resultsArray)
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+      , 3000)
     } else {
 
       setTimeout(() => 
