@@ -188,7 +188,9 @@ function App() {
           canvasData.current.convertToBlob();
           console.log("this round is even! setting next round to odd!")
         } else {
+          socket.emit('')
           console.log("this round is odd! setting next round to even!")
+          socket.emit('storeInfo', state.promptID, state.gameID, state.guess, state.round);
           
           // setState(prevState => ({ ...prevState, }))
         }
