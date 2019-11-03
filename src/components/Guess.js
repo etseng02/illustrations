@@ -10,6 +10,8 @@ export default function Guess(props) {
   // const container = document.getElementById("imageContainer");
   // const img = new Image();
   // img.src = imageSource;
+  
+
   return (
     <Fragment>
       <h1 >Guess what this is!</h1>

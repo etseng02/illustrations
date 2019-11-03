@@ -30,6 +30,7 @@ function App() {
     gameID: null,
     drawing: null,
     promptID: null,
+    guess: "",
   });
 
   
@@ -175,12 +176,16 @@ function App() {
       console.log("received a message for next round ", game, round)
       console.log("this is the current round", state.round)
       if (state.hostMachine === true) {
+        setState(prevState => ({ ...prevState, round: round+1}))
+        console.log("I am the host machine you have no power over me")
         //do nothing
       } else if (round % 2 === 0) {
           canvasData.current.convertToBlob();
           console.log("this round is even! setting next round to odd!")
         } else {
           console.log("this round is odd! setting next round to even!")
+          
+          // setState(prevState => ({ ...prevState, }))
         }
       //setState(prevState => ({ ...prevState, gameID: game }))
     });
@@ -285,7 +290,9 @@ function App() {
 
       {state.phase === "guess" && !state.hostMachine &&//Guess Phase
         <Fragment>
-          <Guess imageSource={convertToImage(state.drawing)}
+          <Guess
+          imageSource={convertToImage(state.drawing)}
+          setGuess={""}
           />
         </Fragment>
       }

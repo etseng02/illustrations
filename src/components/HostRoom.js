@@ -24,6 +24,7 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
       <Fragment>
         <h1>GUESS PHASE</h1>
         <h2>Guess the picture on your screen!</h2>
+        <Button  onClick = {() => nextRound()}>Next round</Button>
       </Fragment>
     }
 
