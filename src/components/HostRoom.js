@@ -26,20 +26,27 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
   let imageArray = [];
   let drawingImages = endGameInfo.map(image => {
     console.log("these are the infos", image);
-    for(let i = 0; i < image.info.drawings.length; i++) {
-      imageArray.push(`
-      <div>
-        <p>{image.info.word}</p>
-        <img src={${convertToImage(image.info.drawings[i])}}/>
-      </div>`);
-      console.log("images", image.info.drawings[i]);
-      // return  (
-      //   <div>
-      //     <p>{image.info.word}</p>
-      //     <img src={convertToImage(image.info.drawings[i])}/>
-      //   </div>
-      // )
+    let guessNumber = -1
+
+    return(
+      <Fragment>
+      <h1>ORIGINAL WORD: {image.info.word}</h1>
+
+    
+    {image.info.drawings.map((images) =>{
+      guessNumber = guessNumber + 1
+      return (
+      <Fragment>
+        <div>
+        <img src={convertToImage(images)}/>
+        </div>
+        <h1>DAT GUESS: {image.info.guesses[guessNumber]}</h1>
+      </Fragment>)})
     }
+
+    </Fragment>
+    )
+
     // console.log(image.info.drawings[0].data);
     // return <img src={convertToImage(image.info.drawings)}/>
   });
