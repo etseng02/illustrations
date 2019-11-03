@@ -179,7 +179,7 @@ function App() {
         setState(prevState => ({ ...prevState, round: round+1}))
         console.log("I am the host machine you have no power over me")
         //do nothing
-      } else if (round % 2 === 0) {
+      } else if (state.round % 2 === 0) {
           canvasData.current.convertToBlob();
           console.log("this round is even! setting next round to odd!")
         } else {
