@@ -279,10 +279,14 @@ function App() {
   },[state.playerPosition])
 
   useEffect(()=>{
-    socket.on('endGame',function (submissionData) {
+    socket.on('endGame',function (finalArray) {
       setState(prevState => ({ ...prevState, phase: "endgame"}))
 
     })
+
+    return () => {
+      socket.off('endGame')
+    }
 
    },[])
 
