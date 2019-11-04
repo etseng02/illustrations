@@ -44,7 +44,7 @@ function App() {
     const possibleCharacters = 'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
     let newShortURL = "";
     while (newShortURL.length < 4) {
-      newShortURL = newShortURL + possibleCharacters[Math.floor(Math.random() * 36)];
+      newShortURL = newShortURL + possibleCharacters[Math.floor(Math.random() * 34)];
     }
     return newShortURL;
   };
