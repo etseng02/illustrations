@@ -1,8 +1,8 @@
 import React, { Component, Fragment, setState } from 'react';
 import Pusher from 'pusher-js';
 import reactCSS from 'reactcss';
-import eraser from './image/eraser.png';
-import pencil from './image/pencil.png';
+import eraser from '../images/eraser.png';
+import pencil from '../images/pencil.png';
 import { CirclePicker } from 'react-color';
 
 class Canvas extends Component {
@@ -140,6 +140,9 @@ class Canvas extends Component {
     this.prevPos = { clientX, clientY };
   }
 
+  onPencilClick() {
+    console.log("pencil clicked");
+  }
 
   componentDidMount() {
     // Prevent scrolling when touching the canvas: mobile

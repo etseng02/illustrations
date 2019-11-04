@@ -17,10 +17,10 @@ function App() {
   const retrieveGuess = useRef(null);
   // console.log(canvasData.current.convertToBlob());
 
-  //const { current: socket } = useRef(io('http://localhost:8080'));
+  const { current: socket } = useRef(io('http://localhost:8080'));
 
   //USE THIS FOR HOSTING OTHER DEVICES: (SHOULD BE YOUR LOCAL IP)
-  const { current: socket } = useRef(io('http://172.46.0.158:8080'));
+  // const { current: socket } = useRef(io('http://172.46.0.158:8080'));
   
   const [state, setState] = useState({
     roomID: "",
