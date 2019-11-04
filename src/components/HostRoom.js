@@ -27,7 +27,8 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
   let imageArray = [];
   let drawingImages = endGameInfo.map(image => {
     console.log("these are the infos", image);
-    let guessNumber = -1
+    let guessNumber = -1;
+    let playerNumber = -2;
 
     return(
       <Fragment>
@@ -36,12 +37,15 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
 
           {image.info.drawings.map((images) =>{
             guessNumber = guessNumber + 1
+            playerNumber = playerNumber + 2
             return (
             <Fragment>
               <div>
+              <h1>{image.info.player_names[playerNumber]}'s drawing:</h1>
               <img src={convertToImage(images)}/>
               </div>
-              <h1>DAT GUESS: {image.info.guesses[guessNumber]}</h1>
+              {image.info.guesses[guessNumber]? <h1>{image.info.player_names[playerNumber+1]} guessed: {image.info.guesses[guessNumber]}</h1>: null}
+              
             </Fragment>
             )}
           )}
