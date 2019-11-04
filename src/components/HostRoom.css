@@ -1,0 +1,7 @@
+div.final{
+  padding: 2em;
+  display: flex;
+  background-color: #87F2FB;
+  justify-content: center;
+  align-items: center;
+}

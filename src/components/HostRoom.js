@@ -31,20 +31,22 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
 
     return(
       <Fragment>
-      <h1>ORIGINAL WORD: {image.info.word}</h1>
+        <div className="final">
+          <h1>{image.info.player_names[0]}'s Original Word: {image.info.word}</h1>
 
-    
-    {image.info.drawings.map((images) =>{
-      guessNumber = guessNumber + 1
-      return (
-      <Fragment>
-        <div>
-        <img src={convertToImage(images)}/>
-        </div>
-        <h1>DAT GUESS: {image.info.guesses[guessNumber]}</h1>
-      </Fragment>)})
-    }
+          {image.info.drawings.map((images) =>{
+            guessNumber = guessNumber + 1
+            return (
+            <Fragment>
+              <div>
+              <img src={convertToImage(images)}/>
+              </div>
+              <h1>DAT GUESS: {image.info.guesses[guessNumber]}</h1>
+            </Fragment>
+            )}
+          )}
 
+      </div>
     </Fragment>
     )
 
