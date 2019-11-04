@@ -14,8 +14,13 @@ function App() {
 
   // var socket = io('http://localhost:8080');
   const canvasData = useRef(null);
+  const retrieveGuess = useRef(null);
   // console.log(canvasData.current.convertToBlob());
-  const { current: socket } = useRef(io('http://localhost:8080'));
+
+  // const { current: socket } = useRef(io('http://localhost:8080'));
+
+  //USE THIS FOR HOSTING OTHER DEVICES: (SHOULD BE YOUR LOCAL IP)
+  const { current: socket } = useRef(io('http://172.46.0.232:8080'));
   
   const [state, setState] = useState({
     roomID: "",
@@ -30,6 +35,8 @@ function App() {
     gameID: null,
     drawing: null,
     promptID: null,
+    guess: "",
+    endGameInfo: [],
   });
 
   
@@ -173,13 +180,20 @@ function App() {
   useEffect(()=>{
     socket.on('nextRound', function (game, round) {
       console.log("received a message for next round ", game, round)
-      if (round % 2 === 0)
-        {
+      console.log("this is the current round", state.round)
+      if (state.hostMachine === true) {
+        setState(prevState => ({ ...prevState, round: round+1}))
+        console.log("I am the host machine you have no power over me")
+        //do nothing
+      } else if (state.round % 2 === 0) {
           canvasData.current.convertToBlob();
-          // console.log(holdIt());
-          // const imageArray = canvasData.current.convertToBlob();
-          //console.log("this is the state drawing", state);
-          console.log("this round is even! setting next round!")
+          console.log("this round is even! setting next round to odd!")
+        } else {
+          socket.emit('')
+          console.log("this round is odd! setting next round to even!")
+          socket.emit('storeInfo', state.promptID, state.gameID, state.guess, state.round);
+          
+          // setState(prevState => ({ ...prevState, }))
         }
       //setState(prevState => ({ ...prevState, gameID: game }))
     });
@@ -201,13 +215,21 @@ function App() {
   
   const onButtonClick = () => {
     canvasData.current.convertToBlob();
+    console.log("statedrawing", state.drawing);
+    // const imageSource = URL.createObjectURL(state.drawing);
+    // const container = document.getElementById("imageContainer");
+    // const img = new Image();
+    // img.src = imageSource;
+    // document.body.appendChild(img);
   };
 
   function convertToImage(blob) {
-    const blobUrl = URL.createObjectURL(blob);
-    return blobUrl;
+    const arrayBufferView = new Uint8Array(blob.data);
+    const blobData = new Blob([arrayBufferView], { type: "image/png" });
+    const imageUrl = URL.createObjectURL(blobData);
+    return imageUrl;
   };
-
+  
   useEffect(()=>{
     if (state.round % 2 === 0 && state.drawing){
       console.log("the drawing state has been set")
@@ -243,7 +265,7 @@ function App() {
           if (wordPair[2] % 2 === 0) {
             setState(prevState => ({ ...prevState, prompt: wordPair[0], promptID: wordPair[1], round: wordPair[2]}))
           } else {
-              setState(prevState => ({ ...prevState, drawing: wordPair[0], promptID: wordPair[1], round: wordPair[2]}))
+            setState(prevState => ({ ...prevState, drawing: wordPair[0], promptID: wordPair[1], round: wordPair[2]}))
           }
 
         } else {
@@ -257,6 +279,20 @@ function App() {
   })
   },[state.playerPosition])
 
+  useEffect(()=>{
+    socket.on('endGame',function (finalArray) {
+      setState(prevState => ({ ...prevState, endGameInfo: finalArray, phase: "endgame"}))
+      console.log("this is the final", finalArray);
+    })
+
+    return () => {
+      socket.off('endGame')
+    }
+
+   },[])
+
+  
+
   
   return (
     <Fragment>
@@ -265,21 +301,30 @@ function App() {
       >  
       </Header>
 
+      {state.phase === "endgame" && !state.hostMachine &&
+        <Fragment>
+          <h1>The Game has Ended</h1>
+          <h1>Check the Screen for results!</h1>
+        </Fragment>
+      }
+
 
       {state.phase === "draw" && !state.hostMachine &&//Draw Phase
       <Fragment>
         <h3 style={{ textAlign: 'center' }}>Draw this: {state.prompt}</h3>
         <Canvas ref={ref => canvasData.current = ref }
                 onData={(data) => holdIt(data)} />
-        <button onClick={onButtonClick}>>??????</button>
       </Fragment>
       }
 
       {state.phase === "guess" && !state.hostMachine &&//Guess Phase
         <Fragment>
           <Guess
+          setGuess={setState}
+          
+          imageSource={convertToImage(state.drawing)}
+          ref={ref => retrieveGuess.current = ref }
           />
-
         </Fragment>
       }
       
@@ -293,6 +338,7 @@ function App() {
           startGame={startGame}
           phase={state.phase}
           nextRound={nextRound}
+          endGameInfo={state.endGameInfo}
         >
         </HostRoom>
 
@@ -301,9 +347,6 @@ function App() {
 
       {!state.roomID && !state.hostMachine &&//When roomID is falsy, Join room field, name field, and create room field will be rendered
         <Fragment>
-          <Button
-            onClick={draw}
-          >Draw Iceman</Button>
           <JoinRoom
             onClick={enterRoom}
           >

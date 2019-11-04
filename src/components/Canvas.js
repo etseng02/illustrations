@@ -42,14 +42,7 @@ class Canvas extends Component {
   convertToBlob() {
     this.canvas.toBlob((blob) =>  {
       this.props.onData(blob);
-      // blob.arrayBuffer().then((data) => {
-      //   console.log(">", data);
-      //   this.props.onData(data);
-      // }).catch((err) => {
-      //   console.error(err);
-      // })
     }, "image/png", 0.75);
-    // console.log(blobDta);
   };
   //COLOR PICKER END
   
@@ -149,8 +142,8 @@ class Canvas extends Component {
       e.preventDefault();
     });
     // Here we set up the properties of the canvas element. 
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
+    this.canvas.width = 400;
+    this.canvas.height = 600;
     this.ctx = this.canvas.getContext('2d');
     this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';

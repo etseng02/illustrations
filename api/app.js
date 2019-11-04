@@ -52,7 +52,10 @@ var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-server.listen(8080);
+// server.listen(8080);
+
+//CONNECTING OTHER DEVICE TO SOCKET: USE BELOW
+server.listen(8080, '172.46.0.232');// < it has to be your local ip :)
 // WARNING: app.listen(80) will NOT work here!
 
 app.get('/', function (req, res) {
@@ -194,7 +197,7 @@ io.on('connection', function (socket) {
       for(let i = 0; i < wordArray.length; i++) {
         finalArray.push([wordArray[i], positionArray[i], idArray[i]]);
       }
-      console.log(finalArray);
+      // console.log(finalArray);
       io.in(room).emit('startGame', finalArray)
       //socket.to(room).emit('startGame', finalArray);
     })
@@ -207,79 +210,117 @@ io.on('connection', function (socket) {
 
 
   socket.on('nextRound', function(game, round, room){
-    //console.log("Testing game and round here", game, round, room)
-    console.log("this is the round number", round)
-    if (round === 0) {
-      socket.to(room).emit('nextRound', game, round)
+    db.query(`
+    SELECT COUNT (id) FROM players
+    WHERE room_id = (SELECT id FROM rooms WHERE rooms.code = $1)
+    `, [room])
+    .then((res) => {
+
+    console.log("this is the number of players", res.rows[0])
+    let numberOfPlayers = res.rows[0].count
+    // tells the client browsers to submit their data
+    io.in(room).emit('nextRound', game, round)
+      console.log("THIS IS THE ROUND", round)
+    if (round === (numberOfPlayers - 1)) {
+      //it is the end of the game
+      setTimeout(() => 
+        db.query(`
+          SELECT * FROM prompts 
+          WHERE game_id = $1
+        `, [game])
+
+        .then((res) => {
+          // console.log(res.rows)
+          let resultsArray = res.rows;
+          console.log("RESULTS ARRAY", resultsArray)
+          io.in(room).emit('endGame', resultsArray)
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+      , 3000)
     } else {
-      socket.to(room).emit('nextRound', game, round)
+
+      setTimeout(() => 
+
+        db.query(`
+        SELECT info, id FROM prompts
+        WHERE game_id = $1;
+        `, [game])
+        .then((res) => {
+          // console.log("this is the response", res.rows)
+          let infoArray = res.rows;
+          let submissionData = [];
+
+          if (round % 2 === 0) {
+            round = round + 1;
+            for (let i = 0; i < infoArray.length; i++) {
+              // why does this not need to be parsed?
+              let infoQueue = infoArray[i].info.queue
+              let jsonInfo = infoArray[i].info
+              let drawingsLength = jsonInfo.drawings.length - 1;
+              submissionData.push([jsonInfo.drawings[drawingsLength], infoArray[i].id, round, infoQueue[round]])
+            }
+            io.in(room).emit('nextRoundInfo', submissionData)
+            return submissionData;
+            
+          } else {
+            round = round + 1;
+            for (let i = 0; i < infoArray.length; i++) {
+              let jsonInfo = infoArray[i].info
+              let infoQueue = infoArray[i].info.queue
+              let guessesLength = jsonInfo.guesses.length - 1;
+              submissionData.push([jsonInfo.guesses[guessesLength], infoArray[i].id, round, infoQueue[round]])
+            }
+            io.in(room).emit('nextRoundInfo', submissionData)
+            return submissionData;
+          }
+        }).catch((err) => {
+        //catching the error for the query inside the setTimeout
+        console.error(err)
+      }), 3000) 
+      // after set timeout
+      //end of else statement
     }
-
-    setTimeout(() => 
-
-      db.query(`
-      SELECT info, id FROM prompts
-      WHERE game_id = $1;
-      `, [game])
-      .then((res) => {
-        console.log("this is the response", res.rows)
-        let infoArray = res.rows;
-        let submissionData = [];
-
-        if (round % 2 === 0) {
-          round = round + 1;
-          for (let i = 0; i < infoArray.length; i++) {
-            // why does this not need to be parsed?
-            let infoQueue = infoArray[i].info.queue
-            console.log(infoQueue)
-            let jsonInfo = infoArray[i].info
-            let drawingsLength = jsonInfo.drawings.length - 1;
-            submissionData.push([jsonInfo.drawings[drawingsLength], infoArray[i].id, round, infoQueue[round]])
-          }
-          console.log(submissionData)
-          io.in(room).emit('nextRoundInfo', submissionData)
-          return submissionData;
-          
-        } else {
-          round = round + 1;
-          for (let i = 0; i < infoArray.length; i++) {
-            let jsonInfo = infoArray[i].info
-            let infoQueue = infoArray[i].info.queue
-            let guessesLength = jsonInfo.guesses.length - 1;
-            submissionData.push([jsonInfo.guesses[guessesLength], infoArray[i].id, round, infoQueue[round]])
-          }
-          io.in(room).emit('nextRoundInfo', submissionData)
-          return submissionData;
-        }
-    }).catch((err) => {
-      console.error(err)
-    }), 5000) 
+    //end of promise of the db.query counting the players
+    })
     
+    .catch((err) => {
+      //catching the error for the initial promise
+      console.error(err)
+    })
   })
 
-  // socket.on('clientNextRound', function(game, round, prompt, blob) {
-    
-  // })
   socket.on('storeInfo', function(promptID, gameID, content, round){
     //console.log("Testing game and round here", game, round, room)
     // console.log("Content received", promptID, content, gameID, round)
+    // console.log("this is the ocntent", content);
     db.query(`
       SELECT info FROM prompts
       WHERE prompts.id = $1
     `, [promptID])
     .then((res) => {
       // console.log(res.rows)
-      let jsonInfo = JSON.parse(res.rows[0].info)
+      // console.log(res.rows[0]);
+      let jsonInfo = ''
+      if (round === 0 ) {
+        jsonInfo = JSON.parse(res.rows[0].info)
+      } else {
+        jsonInfo = res.rows[0].info
+      }
+      
       if(round % 2 === 0) {
         jsonInfo.drawings.push(content)
       } else{
         jsonInfo.guesses.push(content)
+        console.log(jsonInfo.guesses)
       } 
       db.query(`
         UPDATE prompts
         SET info = $1
         WHERE prompts.id = $2
       `, [JSON.stringify(jsonInfo), promptID])
+      // console.log("this is th json object", jsonInfo)
     })
     .catch((err) => {
       console.error(err);
