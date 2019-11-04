@@ -40,11 +40,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-// io.on('connection', function (socket) {
-//   socket.emit('news', { hello: 'world' });
-//   socket.on('my other event', function (data) {
-//     console.log(data);
-//   });
 const db = require("./db");
 
 const rooms = require("./routes/create_room")
@@ -226,17 +221,52 @@ io.on('connection', function (socket) {
       console.log("THIS IS THE ROUND", round)
     if (round === (numberOfPlayers - 1)) {
       //it is the end of the game
+
+      let resultsArray = [];
+      let resultQueues = [];
+      let resultNames = [];
+
       setTimeout(() => 
         db.query(`
           SELECT * FROM prompts 
           WHERE game_id = $1
         `, [game])
-
         .then((res) => {
-          // console.log(res.rows)
-          let resultsArray = res.rows;
-          console.log("RESULTS ARRAY", resultsArray)
-          io.in(room).emit('endGame', resultsArray)
+
+          resultsArray = res.rows;
+          // console.log("QUEUE:", resultsArray[0].info.queue)
+
+          for (let i = 0; i < resultsArray.length; i++) {
+            let queue = resultsArray[i].info.queue;
+            resultQueues.push(queue);
+          }
+          // console.log(resultQueues)
+
+          return db.query(`
+            SELECT name, player_position FROM players
+            WHERE room_id = (SELECT id FROM rooms WHERE code = $1)
+          `, [room])
+
+          .then((res) => {
+            console.log(res.rows)
+            let playersArray = res.rows;
+            let namesForArray = [];
+            
+
+            for (let i = 0; i < resultQueues.length; i++) {
+              let queueNames = []
+              // console.log(playersArray[i].name)
+              
+              for (let j = 0; j < resultQueues[i].length; j ++) {
+                queueNames.push(playersArray[resultQueues[i][j]])
+                
+              }
+              namesForArray.push(queueNames)
+            }
+
+            console.log("this is the names array", namesForArray)
+            io.in(room).emit('endGame', resultsArray)
+          })
         })
         .catch((err) => {
           console.error(err)
