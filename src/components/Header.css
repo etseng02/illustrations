@@ -65,4 +65,8 @@ h1#room {
     font-size: 2.5em;
   }
 
+  h1#room {
+    font-size: 1.25em;
+  }
+
 }
