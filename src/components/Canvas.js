@@ -42,6 +42,8 @@ class Canvas extends Component {
   handleChange = (color) => {
     this.ctx.lineWidth = 5;
     this.setState({ color: color.hex })
+    this.setState({ pencilClicked: "#a2eff5" });
+    this.setState({ eraserClicked: "#FFFFFF" })
   };
 
   convertToBlob() {
@@ -170,13 +172,16 @@ class Canvas extends Component {
     console.log("pencil clicked");
     this.setState({ color: "#000"});
     this.ctx.lineWidth = 5;
-    this.setState({ pencilClicked: "#ff0000"});
+    this.setState({ pencilClicked: "#a2eff5" });
+    this.setState({ eraserClicked: "#FFFFFF" });
   }
 
   onEraserClick = () => {
     console.log("eraser clicked");
     this.setState({ color: "#FFFFFF"});
     this.ctx.lineWidth = 20;
+    this.setState({ eraserClicked: "#a2eff5" });
+    this.setState({ pencilClicked: "#FFFFFF" });
   }
 
   render() {
@@ -223,7 +228,7 @@ class Canvas extends Component {
           width: '25px',
           margin: '0px 0px 0px 10px',
           borderRadius: '5px',
-          background: this.state.pencilClicked,
+          background: this.state.eraserClicked,
         },
         sample: {
           padding: '20px',
@@ -240,8 +245,8 @@ class Canvas extends Component {
           <div style={ styles.cover } onClick={ this.handleClose }/>
           <CirclePicker colors={paletteColors} color={ this.state.color } onChange={ this.handleChange } />
         </div> : null }
-        <img id="pencilImg" src={pencil} alt={'pencil'} style={styles.toolsStyle} onClick={this.onPencilClick}/>
-        <img id="eraserImg" src={eraser} alt={'eraser'} style={styles.toolsStyle} onClick={this.onEraserClick}/>
+        <img id="pencilImg" src={pencil} alt={'pencil'} style={styles.pencilStyle} onClick={this.onPencilClick}/>
+        <img id="eraserImg" src={eraser} alt={'eraser'} style={styles.eraserStyle} onClick={this.onEraserClick}/>
       </div>
       <div style={{textAlign: 'center'}}>
         <canvas
