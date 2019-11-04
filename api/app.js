@@ -55,7 +55,7 @@ var io = require('socket.io')(server);
 // server.listen(8080);
 
 //CONNECTING OTHER DEVICE TO SOCKET: USE BELOW
-server.listen(8080, '172.46.0.232');// < it has to be your local ip :)
+server.listen(8080, '192.168.0.14');// < it has to be your local ip :)
 // WARNING: app.listen(80) will NOT work here!
 
 app.get('/', function (req, res) {
@@ -198,6 +198,9 @@ io.on('connection', function (socket) {
         finalArray.push([wordArray[i], positionArray[i], idArray[i]]);
       }
       // console.log(finalArray);
+
+      // ADD NEW ARRAY FOR PLAYER NAMES HERE!!!
+
       io.in(room).emit('startGame', finalArray)
       //socket.to(room).emit('startGame', finalArray);
     })

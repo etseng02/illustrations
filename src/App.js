@@ -20,7 +20,7 @@ function App() {
   // const { current: socket } = useRef(io('http://localhost:8080'));
 
   //USE THIS FOR HOSTING OTHER DEVICES: (SHOULD BE YOUR LOCAL IP)
-  const { current: socket } = useRef(io('http://172.46.0.232:8080'));
+  const { current: socket } = useRef(io('http://192.168.0.14:8080'));
   
   const [state, setState] = useState({
     roomID: "",
