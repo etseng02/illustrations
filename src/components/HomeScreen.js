@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 import Button from './Button'
-import "./JoinRoom.css";
+import "./HomeScreen.css";
 
-export default function JoinRoom(props) {
+export default function HomeScreen(props) {
 
   const [name, setName] = useState(props.name || "");
   const [room, setRoom] = useState(props.name || "");
@@ -35,6 +35,7 @@ export default function JoinRoom(props) {
       onChange={(event) => setRoom(event.target.value)}
     />
     <Button onClick = {() => validate()}>Join Room</Button>
+    <Button onClick = {() => props.createRoom()}>Create Room</Button>
   </form>
   );
 }

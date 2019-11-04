@@ -8,7 +8,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   background-image: url("./images/backgound2.png");
-  background-position: 0px 120px;
+  background-position: 0px 105px;
 
 }
 
@@ -26,6 +26,7 @@ button {
   border: 2px solid #00E9FF;
   box-shadow: 3px 3px 5px grey;
   color:white;
+  margin:0.5rem;
 }
 
 button:focus {
@@ -42,14 +43,22 @@ input {
   border-radius: 10px;
   padding: 10px;
   font-size:1em;
-  
-
+  margin:0.5rem;
 }
 
 input:focus{
   outline: #009EAD;
   border: 2px solid #009EAD;
   box-shadow: 3px 3px 5px grey;
+}
+
+canvas {
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  margin-left:0px;
+  margin-right:0px;
+
 }
 
 @media (max-width: 600px) {
