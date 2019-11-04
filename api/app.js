@@ -84,6 +84,8 @@ io.on('connection', function (socket) {
   });
 
   socket.on('joinRoom', function (name, room) {
+    room = room.toUpperCase()
+    console.log("THIS IS THE ROOM INPUT", room)
 
     db.query(`
       INSERT INTO players (name, room_id, player_position)
@@ -208,67 +210,75 @@ io.on('connection', function (socket) {
 
 
   socket.on('nextRound', function(game, round, room){
+
     db.query(`
-    SELECT COUNT (id) FROM players
-    WHERE room_id = (SELECT id FROM rooms WHERE rooms.code = $1)
+      SELECT COUNT (id) FROM players
+      WHERE room_id = (SELECT id FROM rooms WHERE rooms.code = $1)
     `, [room])
     .then((res) => {
 
-    console.log("this is the number of players", res.rows[0])
-    let numberOfPlayers = res.rows[0].count
-    // tells the client browsers to submit their data
-    io.in(room).emit('nextRound', game, round)
+      console.log("this is the number of players", res.rows[0])
+      let numberOfPlayers = res.rows[0].count
+      // tells the client browsers to submit their data
+      io.in(room).emit('nextRound', game, round)
       console.log("THIS IS THE ROUND", round)
-    if (round === (numberOfPlayers - 1)) {
-      //it is the end of the game
 
-      let resultsArray = [];
-      let resultQueues = [];
-      let resultNames = [];
+      if (numberOfPlayers % 2 === 0) {
+        // always want to end on a guessing round
+        numberOfPlayers = numberOfPlayers - 1
+      }
 
-      setTimeout(() => 
-        db.query(`
-          SELECT * FROM prompts 
-          WHERE game_id = $1
-        `, [game])
-        .then((res) => {
 
-          resultsArray = res.rows;
-          // console.log("QUEUE:", resultsArray[0].info.queue)
+      if (round === (numberOfPlayers - 1)) {
+        //it is the end of the game
 
-          for (let i = 0; i < resultsArray.length; i++) {
-            let queue = resultsArray[i].info.queue;
-            resultQueues.push(queue);
-          }
-          // console.log(resultQueues)
+        let resultsArray = [];
+        let resultQueues = [];
+        let resultNames = [];
 
-          return db.query(`
-            SELECT name, player_position FROM players
-            WHERE room_id = (SELECT id FROM rooms WHERE code = $1)
-          `, [room])
-
+        setTimeout(() => 
+          db.query(`
+            SELECT * FROM prompts 
+            WHERE game_id = $1
+          `, [game])
           .then((res) => {
-            let playersArray = res.rows;
-            let namesForArray = [];
-            for (let i = 0; i < resultQueues.length; i++) {
-              let queueNames = []
-              for (let j = 0; j < resultQueues[i].length; j ++) {
-                queueNames.push(playersArray[resultQueues[i][j] - 1].name)
+
+            resultsArray = res.rows;
+            // console.log("QUEUE:", resultsArray[0].info.queue)
+
+            for (let i = 0; i < resultsArray.length; i++) {
+              let queue = resultsArray[i].info.queue;
+              resultQueues.push(queue);
+            }
+            // console.log(resultQueues)
+
+            return db.query(`
+              SELECT name, player_position FROM players
+              WHERE room_id = (SELECT id FROM rooms WHERE code = $1)
+            `, [room])
+
+            .then((res) => {
+              let playersArray = res.rows;
+              let namesForArray = [];
+              for (let i = 0; i < resultQueues.length; i++) {
+                let queueNames = []
+                for (let j = 0; j < resultQueues[i].length; j ++) {
+                  queueNames.push(playersArray[resultQueues[i][j] - 1].name)
+                }
+                namesForArray.push(queueNames)
               }
-              namesForArray.push(queueNames)
-            }
-            for(let i = 0; i < resultsArray.length; i ++) {
-              resultsArray[i].info.player_names = namesForArray[i];
-            }
-            io.in(room).emit('endGame', resultsArray)
+              for(let i = 0; i < resultsArray.length; i ++) {
+                resultsArray[i].info.player_names = namesForArray[i];
+              }
+              io.in(room).emit('endGame', resultsArray)
+            })
           })
-        })
-        
-        .catch((err) => {
-          console.error(err)
-        })
-      , 3000)
-    } else {
+          
+          .catch((err) => {
+            console.error(err)
+          })
+        , 3000)
+      } else {
 
       setTimeout(() => 
 
