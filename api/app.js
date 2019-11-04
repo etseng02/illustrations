@@ -248,26 +248,22 @@ io.on('connection', function (socket) {
           `, [room])
 
           .then((res) => {
-            console.log(res.rows)
             let playersArray = res.rows;
             let namesForArray = [];
-            
-
             for (let i = 0; i < resultQueues.length; i++) {
               let queueNames = []
-              // console.log(playersArray[i].name)
-              
               for (let j = 0; j < resultQueues[i].length; j ++) {
-                queueNames.push(playersArray[resultQueues[i][j]])
-                
+                queueNames.push(playersArray[resultQueues[i][j] - 1].name)
               }
               namesForArray.push(queueNames)
             }
-
-            console.log("this is the names array", namesForArray)
+            for(let i = 0; i < resultsArray.length; i ++) {
+              resultsArray[i].info.player_names = namesForArray[i];
+            }
             io.in(room).emit('endGame', resultsArray)
           })
         })
+        
         .catch((err) => {
           console.error(err)
         })
