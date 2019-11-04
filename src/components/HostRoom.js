@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import Button from './Button'
+import './HostRoom.css'
 
 export default function HostRoom({ ready = "", players = [], phase = "", roomID, startGame, nextRound, endGameInfo }) {
 
