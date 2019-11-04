@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect, useRef } from 'react';
 import './App.css';
 import Canvas from './components/Canvas'
 import Button from './components/Button'
-import JoinRoom from './components/JoinRoom'
+import HomeScreen from './components/HomeScreen'
 import HostRoom from './components/HostRoom'
 import Waiting from './components/Waiting'
 import Header from './components/Header'
@@ -17,10 +17,10 @@ function App() {
   const retrieveGuess = useRef(null);
   // console.log(canvasData.current.convertToBlob());
 
-  // const { current: socket } = useRef(io('http://localhost:8080'));
+  const { current: socket } = useRef(io('http://localhost:8080'));
 
   //USE THIS FOR HOSTING OTHER DEVICES: (SHOULD BE YOUR LOCAL IP)
-  const { current: socket } = useRef(io('http://192.168.0.14:8080'));
+  // const { current: socket } = useRef(io('http://172.46.0.158:8080'));
   
   const [state, setState] = useState({
     roomID: "",
@@ -347,13 +347,12 @@ function App() {
 
       {!state.roomID && !state.hostMachine &&//When roomID is falsy, Join room field, name field, and create room field will be rendered
         <Fragment>
-          <JoinRoom
+          <HomeScreen
             onClick={enterRoom}
+            createRoom={createRoom}
           >
-          </JoinRoom>
-          <Button
-            onClick={createRoom}
-          >Create Room</Button>
+          </HomeScreen>
+
        </Fragment>
       }
 

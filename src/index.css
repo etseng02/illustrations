@@ -7,11 +7,59 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
+  background-image: url("./images/backgound2.png");
+  background-position: 0px 105px;
+
 }
 
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+button {
+  border-radius: 10px;
+  background-color: #00E9FF;
+  padding: 10px;
+  font-size: 1.25em;
+  border: 2px solid #00E9FF;
+  box-shadow: 3px 3px 5px grey;
+  color:white;
+  margin:0.5rem;
+}
+
+button:focus {
+  outline: #009EAD;
+  border: 2px solid #009EAD;
+  background-color: white;
+  color: #009EAD;
+  box-shadow: 5px 5px 8px grey;
+
+}
+
+input {
+  border: 2px solid #00E9FF;
+  border-radius: 10px;
+  padding: 10px;
+  font-size:1em;
+  margin:0.5rem;
+}
+
+input:focus{
+  outline: #009EAD;
+  border: 2px solid #009EAD;
+  box-shadow: 3px 3px 5px grey;
+}
+
+
+@media (max-width: 600px) {
+
+    body {
+      background-position: center;
+      background-size: 75%; 
+      /* background-image: url("./images/mobilebackgound1.jpg"); */
+
+  }
 }
 
