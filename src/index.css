@@ -52,14 +52,6 @@ input:focus{
   box-shadow: 3px 3px 5px grey;
 }
 
-canvas {
-  display: flex;
-  justify-content: center;
-  justify-items: center;
-  margin-left:0px;
-  margin-right:0px;
-
-}
 
 @media (max-width: 600px) {
 

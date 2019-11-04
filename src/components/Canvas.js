@@ -1,6 +1,8 @@
 import React, { Component, Fragment, setState } from 'react';
 import Pusher from 'pusher-js';
 import reactCSS from 'reactcss';
+import eraser from '../images/eraser.png';
+import pencil from '../images/pencil.png';
 import { CirclePicker } from 'react-color';
 
 class Canvas extends Component {
@@ -23,6 +25,8 @@ class Canvas extends Component {
   //COLOR PICKER
   state = {
     drawing: null,
+    pencilClicked: false,
+    eraserClicked: false,
     displayColorPicker: false,
     color: "#000"
   };
@@ -88,6 +92,7 @@ class Canvas extends Component {
   }
   //mobile
   onTouchStart({ nativeEvent}) {
+    this.setState({ displayColorPicker: false });
     this.userStrokeStyle = this.state.color;
     const { clientX, clientY } = nativeEvent.touches[0];
     this.isPainting = true;
@@ -135,6 +140,9 @@ class Canvas extends Component {
     this.prevPos = { clientX, clientY };
   }
 
+  onPencilClick() {
+    console.log("pencil clicked");
+  }
 
   componentDidMount() {
     // Prevent scrolling when touching the canvas: mobile
@@ -161,6 +169,10 @@ class Canvas extends Component {
   }
 
   render() {
+    //overwrite the default colors for palette
+    const paletteColors = ['#000000', '#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5',
+                           '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A',
+                           '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548'];
     const styles = reactCSS({
       'default': {
         color: {
@@ -188,6 +200,12 @@ class Canvas extends Component {
           bottom: '0px',
           left: '0px',
         },
+        toolsStyle: {
+          height: '25px',
+          width: '25px',
+          margin: '0px 0px 0px 10px',
+          borderRadius: '5px',
+        },
         sample: {
           padding: '20px',
         },
@@ -195,25 +213,22 @@ class Canvas extends Component {
     });
     return (
       <Fragment>
-        <button
-          onClick={this.convertToBlob}>
-            what
-        </button>
-        <div>
+      <div>
         <div style={ styles.swatch } onClick={ this.handleClick }>
           <div style={ styles.color } />
         </div>
         { this.state.displayColorPicker ? <div style={ styles.popover }>
           <div style={ styles.cover } onClick={ this.handleClose }/>
-          <CirclePicker color={ this.state.color } onChange={ this.handleChange } />
+          <CirclePicker colors={paletteColors} color={ this.state.color } onChange={ this.handleChange } />
         </div> : null }
-
+        <img src={pencil} alt={'pencil'} style={styles.toolsStyle}/>
+        <img src={eraser} alt={'eraser'} style={styles.toolsStyle}/>
       </div>
-      <div style={ styles.sample }>
+      <div style={{textAlign: 'center'}}>
         <canvas
         // We use the ref attribute to get direct access to the canvas element. 
           ref={(ref) => (this.canvas = ref)}
-          style={{ background: 'white' }}
+          style={{ background: 'white', border: '2px solid #33E0FF', position: 'relative'}}
           onMouseDown={this.onMouseDown}
           onMouseLeave={this.endPaintEvent}
           onMouseUp={this.endPaintEvent}
