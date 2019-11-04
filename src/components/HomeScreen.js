@@ -23,18 +23,20 @@ export default function HomeScreen(props) {
   return (
     <form autoComplete="off">
     <input
+      id="name-field"
       value={name}
       type="text"
       placeholder="Enter your name"
       onChange={(event) => setName(event.target.value)}
     />
     <input
+      id="room-field"
       value={room}
       type="text"
       placeholder="Enter Room ID"
       onChange={(event) => setRoom(event.target.value)}
     />
-    <Button onClick = {() => validate()}>Join Room</Button>
+    <Button id="join-room" onClick = {() => validate()}>Join Room</Button>
     <Button id="create-room" onClick = {() => props.createRoom()}>Create Room</Button>
   </form>
   );
