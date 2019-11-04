@@ -7,8 +7,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
-  background-image: url("./images/background1.jpg");
-  background-position: center;
+  background-image: url("./images/backgound2.png");
+  background-position: 0px 120px;
 
 }
 
@@ -20,10 +20,10 @@ code {
 
 button {
   border-radius: 10px;
-  background-color: #009EAD;
+  background-color: #00E9FF;
   padding: 10px;
   font-size: 1.25em;
-  border: 2px solid #009EAD;
+  border: 2px solid #00E9FF;
   box-shadow: 3px 3px 5px grey;
   color:white;
 }
@@ -38,9 +38,11 @@ button:focus {
 }
 
 input {
+  border: 2px solid #00E9FF;
   border-radius: 10px;
   padding: 10px;
   font-size:1em;
+  
 
 }
 
@@ -53,7 +55,9 @@ input:focus{
 @media (max-width: 600px) {
 
     body {
-      background-image: url("./images/mobilebackgound1.jpg");
+      background-position: center;
+      background-size: 75%; 
+      /* background-image: url("./images/mobilebackgound1.jpg"); */
 
   }
 }

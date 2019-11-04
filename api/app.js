@@ -52,10 +52,10 @@ var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-// server.listen(8080);
+//server.listen(8080);
 
 //CONNECTING OTHER DEVICE TO SOCKET: USE BELOW
-server.listen(8080, '172.46.0.232');// < it has to be your local ip :)
+server.listen(8080, '192.168.0.23');// < it has to be your local ip :)
 // WARNING: app.listen(80) will NOT work here!
 
 app.get('/', function (req, res) {
