@@ -11,3 +11,11 @@ form {
 
   /* background-color: lightgrey; */
 }
+
+@media (max-width: 600px) {
+
+  button#create-room{
+    display: none;
+  }
+
+}

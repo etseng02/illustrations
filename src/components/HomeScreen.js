@@ -35,7 +35,7 @@ export default function HomeScreen(props) {
       onChange={(event) => setRoom(event.target.value)}
     />
     <Button onClick = {() => validate()}>Join Room</Button>
-    <Button onClick = {() => props.createRoom()}>Create Room</Button>
+    <Button id="create-room" onClick = {() => props.createRoom()}>Create Room</Button>
   </form>
   );
 }
