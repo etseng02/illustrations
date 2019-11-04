@@ -25,8 +25,8 @@ class Canvas extends Component {
   //COLOR PICKER
   state = {
     drawing: null,
-    pencilClicked: false,
-    eraserClicked: false,
+    pencilClicked: "#FFFFFF",
+    eraserClicked: "#FFFFFF",
     displayColorPicker: false,
     color: "#000"
   };
@@ -40,6 +40,7 @@ class Canvas extends Component {
   };
   
   handleChange = (color) => {
+    this.ctx.lineWidth = 5;
     this.setState({ color: color.hex })
   };
 
@@ -140,9 +141,6 @@ class Canvas extends Component {
     this.prevPos = { clientX, clientY };
   }
 
-  onPencilClick() {
-    console.log("pencil clicked");
-  }
 
   componentDidMount() {
     // Prevent scrolling when touching the canvas: mobile
@@ -166,6 +164,19 @@ class Canvas extends Component {
     //     document.body.appendChild(img);
     //   }, "image/png", 0.75);
     // }, 5000);
+  }
+
+  onPencilClick = () => {
+    console.log("pencil clicked");
+    this.setState({ color: "#000"});
+    this.ctx.lineWidth = 5;
+    this.setState({ pencilClicked: "#ff0000"});
+  }
+
+  onEraserClick = () => {
+    console.log("eraser clicked");
+    this.setState({ color: "#FFFFFF"});
+    this.ctx.lineWidth = 20;
   }
 
   render() {
@@ -200,11 +211,19 @@ class Canvas extends Component {
           bottom: '0px',
           left: '0px',
         },
-        toolsStyle: {
+        pencilStyle: {
           height: '25px',
           width: '25px',
           margin: '0px 0px 0px 10px',
           borderRadius: '5px',
+          background: this.state.pencilClicked,
+        },
+        eraserStyle: {
+          height: '25px',
+          width: '25px',
+          margin: '0px 0px 0px 10px',
+          borderRadius: '5px',
+          background: this.state.pencilClicked,
         },
         sample: {
           padding: '20px',
@@ -221,8 +240,8 @@ class Canvas extends Component {
           <div style={ styles.cover } onClick={ this.handleClose }/>
           <CirclePicker colors={paletteColors} color={ this.state.color } onChange={ this.handleChange } />
         </div> : null }
-        <img src={pencil} alt={'pencil'} style={styles.toolsStyle}/>
-        <img src={eraser} alt={'eraser'} style={styles.toolsStyle}/>
+        <img id="pencilImg" src={pencil} alt={'pencil'} style={styles.toolsStyle} onClick={this.onPencilClick}/>
+        <img id="eraserImg" src={eraser} alt={'eraser'} style={styles.toolsStyle} onClick={this.onEraserClick}/>
       </div>
       <div style={{textAlign: 'center'}}>
         <canvas
