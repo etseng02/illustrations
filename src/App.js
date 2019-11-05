@@ -142,7 +142,10 @@ function App() {
       // console.log ("this is the client name: ", state.name)
       // console.log ("this is the server name: ", name)
       console.log(`Receiving a player position for ${name} and assigning ${position}`)
-      if (name === state.name){
+      if (name === state.name && position === "error" && state.playerPosition === null) {
+        console.log('nah bro')
+        setState(prevState => ({ ...prevState, name: "", roomID: "" }))
+      } else if (name === state.name){
         console.log("the position has been assigned", position)
         setState(prevState => ({ ...prevState, playerPosition: position }))
         }

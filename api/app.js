@@ -128,7 +128,8 @@ io.on('connection', function (socket) {
 
       } else {
         console.log("same name has been detected sending error message")
-        socket.to(room).emit('joinRoom', name, 'error')
+        //socket.to(room).emit('joinRoom', name, 'error')
+        socket.emit('joinRoom', name, 'error')
 
       }
     })
