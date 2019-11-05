@@ -48,7 +48,7 @@ div.guessPhaseStyle {
   box-shadow: 5px 5px 8px grey;
 }
 
-div.final{
+/* div.final{
   padding-top: 1em;
   display: flex;
   background-color: white;
@@ -57,7 +57,7 @@ div.final{
   border: 2px solid #009EAD;
   text-align: center;
   margin: 0px;
-}
+} */
 
 h1#end-title{
   font-family: 'bangers';

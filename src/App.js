@@ -317,8 +317,10 @@ function App() {
 
       {state.phase === "endgame" && !state.hostMachine &&
         <Fragment>
-          <h1>The Game has Ended</h1>
-          <h1>Check the Screen for results!</h1>
+          <div className="endStyle">
+            <h1>The Game has Ended</h1>
+            <h1>Check the Screen for results!</h1>
+          </div>
         </Fragment>
       }
 
