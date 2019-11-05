@@ -4,11 +4,6 @@ import './HostRoom.css'
 
 export default function HostRoom({ ready = "", players = [], phase = "", roomID, startGame, nextRound, endGameInfo }) {
 
-  // const [ready] = useState(props.ready || "");
-  // const [players] = useState(props.players || "");
-  // const [statePhase, setPhase] = useState(props.phase || "");
-
-  //let readyPlayers = players.filter(element => ready.includes(element));
   function convertToImage(blob) {
     const arrayBufferView = new Uint8Array(blob.data);
     const blobData = new Blob([arrayBufferView], { type: "image/png" });
@@ -53,8 +48,6 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
     </Fragment>
     )
 
-    // console.log(image.info.drawings[0].data);
-    // return <img src={convertToImage(image.info.drawings)}/>
   });
 
   return (
@@ -62,35 +55,39 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
 
     {phase === "draw" &&
       <Fragment>
-        <h1>DRAW PHASE</h1>
-        <h2>Draw the prompt on your screen!</h2>
-        <h2>Ready players</h2>
-        {ready.map(
-          (player) => {
-            return <h3>{player} is ready!</h3> 
-          })
-        }
-        <Button  onClick = {() => nextRound()}>Next round</Button>
+        <div className="drawPhaseStyle">
+          <h1>DRAW PHASE</h1>
+          <h2>Draw the prompt on your screen!</h2>
+          <h2>Ready players</h2>
+          {ready.map(
+            (player) => {
+              return <h3>{player} is ready!</h3> 
+            })
+          }
+          <Button  onClick = {() => nextRound()}>Next round</Button>
+        </div>
       </Fragment>
     }
 
     {phase === "guess" &&
       <Fragment>
-        <h1>GUESS PHASE</h1>
-        <h2>Guess the picture on your screen!</h2>
-        <h2>Ready players</h2>
-        {ready.map(
-          (player) => {
-            return <h3>{player} is ready!</h3> 
-          })
-        }
-        <Button  onClick = {() => nextRound()}>Next round</Button>
+        <div className="guessPhaseStyle">
+          <h1>GUESS PHASE</h1>
+          <h2>Guess the picture on your screen!</h2>
+          <h2>Ready players</h2>
+          {ready.map(
+            (player) => {
+              return <h3>{player} is ready!</h3> 
+            })
+          }
+          <Button  onClick = {() => nextRound()}>Next round</Button>
+        </div>
       </Fragment>
     }
 
     {phase === "endgame" &&
       <Fragment>
-        <h1>The game has ended</h1>
+        <h1 id="end-title">The game has ended</h1>
         <div id="imageContainer">{drawingImages}</div>
 
       </Fragment>
@@ -99,18 +96,20 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
 
     {phase === "" &&
     <Fragment>
-      <h1>Room Code: {roomID}</h1>
-      <h2>Players in Lobby</h2>
-      {
-        players.map(
-          (player) => {
-            if (ready.includes(player)) {
-              return <h3>{player} is Ready!</h3>
-            } else
-            return <h3>{player}</h3>
-        })
-      }
-      <Button onClick = {() => startGame()}>Start Game</Button>
+      <div className="hostRoom">
+        <h1>Room Code: {roomID}</h1>
+        <h2>Players in Lobby</h2>
+        {
+          players.map(
+            (player) => {
+              if (ready.includes(player)) {
+                return <h3>{player} is Ready!</h3>
+              } else
+              return <h3>{player}</h3>
+          })
+        }
+        <Button onClick = {() => startGame()}>Start Game</Button>
+      </div>
     </Fragment>
     }
     </Fragment>

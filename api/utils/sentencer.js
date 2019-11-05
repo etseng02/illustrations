@@ -5,11 +5,11 @@ Sentencer.configure({
   // the list of nouns to use.
   nounList: ['cat', 'dog', 'mouse', 'horse', 'car', 'ghost', 'cow', 'bug', 'sock', 'snake', 'skateboard', 'apple', 'drum', 'cup', 'house', 'cheese',
   'beer', 'ability', 'village', 'tea', 'grandmother', 'historian', 'desk', 'bacon', 'living beverage', 'starfish', 'shoe', 'cake', 'slime', 'snowflake', 
-  'motorcycle', 'tomato', 'jaguar'],
+  'motorcycle', 'tomato', 'jaguar', 'bat', 'swordfish', 'hero', 'ninja', 'spaghetti', 'ramen', 'explorer'],
   // the list of adjectives to use.
   adjectiveList: ['slimy', 'furry', 'scaley', 'sore', 'anxious', 'sorry', 'famous', 'serious', 'educational', 'unhappy', 'terrible', 'embarrassed',
   'environmental', 'powerful', 'historical', 'serious', 'pleasant', 'poor', 'boring', 'remarkable', 'important', 'lucky', 'basic', 'old', 'electronic', 
-  'strong', 'mad', 'dangerous'],
+  'strong', 'mad', 'dangerous', 'large', 'hungry', 'asleep', 'hot', 'odd', 'massive', 'nice', 'bonkers', 'cute', 'useless', 'confused', 'up to no good'],
   actions: {
     my_action: function(){
       return "something";
@@ -20,7 +20,7 @@ Sentencer.configure({
 
 function prompt () {
   var noun = Sentencer.make("{{ noun }}");
-  var adjective = Sentencer.make("{{ an_adjective }}");
+  var adjective = Sentencer.make("{{ adjective }}");
   return adjective + " " + noun;
 }
 

@@ -1,6 +1,8 @@
 import React, { Fragment, useState } from 'react';
 import { statement } from '@babel/template';
 import Button from './Button'
+import './Guess.css';
+
 
 export default function Guess(props) {
 
@@ -20,26 +22,24 @@ export default function Guess(props) {
 
   return (
     <Fragment>
-      <h1 >Guess what this is!</h1>
-
-
-      <input
-          // value={guess}
-          type="text"
-          placeholder="Enter your guess here!"
-          id='guess'
-          onChange={() => {
-            let guess = document.getElementById('guess').value
-            props.setGuess(prev => ({
-              ...prev,
-              guess
-            }))
-          }}
-        />
-        <Button onClick = {() => props.ready()}>Ready</Button>
-        <img src={props.imageSource}></img>
-        <div id="imageContainer"></div>
-
+      <div className="playerGuessStyle">
+        <h1 >Guess what this is!</h1>
+        <input
+            // value={guess}
+            type="text"
+            placeholder="Enter your guess here!"
+            id='guess'
+            onChange={() => {
+              let guess = document.getElementById('guess').value
+              props.setGuess(prev => ({
+                ...prev,
+                guess
+              }))
+            }}
+          />
+          <Button onClick = {() => props.ready()}>Ready</Button>
+          <img src={props.imageSource}></img>
+        </div>
     </Fragment>
   )
 

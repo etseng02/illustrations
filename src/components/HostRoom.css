@@ -1,7 +1,70 @@
-div.final{
-  padding: 2em;
-  display: flex;
+div.hostRoom {
+  display:flex;
+  flex-direction: column;
+  width: 20%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 3em;
   background-color: #87F2FB;
+  border-radius: 10px;
+  padding: 1em;
+  box-shadow: 5px 5px 8px grey;
+}
+
+div.drawPhaseStyle {
+  display:flex;
+  flex-direction: column;
+  width: 20%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 3em;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  border: 2px solid #87F2FB;
+  padding: 1em;
+  box-shadow: 5px 5px 8px grey;
+}
+
+div.guessPhaseStyle {
+  display:flex;
+  flex-direction: column;
+  width: 20%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 3em;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  border: 2px solid #87F2FB;
+  padding: 1em;
+  box-shadow: 5px 5px 8px grey;
+}
+
+div.final{
+  padding-top: 1em;
+  display: flex;
+  background-color: white;
   justify-content: center;
   align-items: center;
+  border: 2px solid #009EAD;
+  text-align: center;
+  margin: 0px;
+}
+
+h1#end-title{
+  font-family: 'bangers';
+  margin: 0px;
+  padding: 1em;
+  text-align: center;
+  color: orangered;
+  background-color: #00E9FF;
+  text-shadow: 4px 4px black;
 }
