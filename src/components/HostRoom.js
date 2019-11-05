@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import Button from './Button'
 import './HostRoom.css'
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 
 export default function HostRoom({ ready = "", players = [], phase = "", roomID, startGame, nextRound, endGameInfo }) {
 
@@ -35,15 +34,9 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
     return(
       <Fragment>
         <div className="final">
-          <Button onClick={animateClick}>Next</Button>
-          <CSSTransitionGroup
-            transitionName = "carousel" 
-            transitionEnterTimeout = {2900} 
-            transitionLeaveTimeout = {2900} >
             <div className="originalWord">
               <h3>{image.info.player_names[0]}'s Original Word: {image.info.word}</h3>
             </div>
-          </CSSTransitionGroup>
           {image.info.drawings.map((images) =>{
             guessNumber = guessNumber + 1
             playerNumber = playerNumber + 2

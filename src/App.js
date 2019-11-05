@@ -51,7 +51,7 @@ function App() {
 
   function enterRoom(name, room){
     console.log("the join room button has been pressed")
-    setState({ ...state, name: name, roomID: room });
+    setState({ ...state, name: name, roomID: room.toUpperCase() });
   }
   
   function createRoom(){
