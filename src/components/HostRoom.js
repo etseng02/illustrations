@@ -16,7 +16,6 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
     return imageUrl;
   };
 
-  console.log("on hostroom", endGameInfo);
   // for(let data of endGameInfo) {
   //   let drawingImg = new Image();
   //   drawingImg.src = convertToImage(data.info.drawings);
@@ -65,6 +64,12 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
       <Fragment>
         <h1>DRAW PHASE</h1>
         <h2>Draw the prompt on your screen!</h2>
+        <h2>Ready players</h2>
+        {ready.map(
+          (player) => {
+            return <h3>{player} is ready!</h3> 
+          })
+        }
         <Button  onClick = {() => nextRound()}>Next round</Button>
       </Fragment>
     }
@@ -73,6 +78,12 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
       <Fragment>
         <h1>GUESS PHASE</h1>
         <h2>Guess the picture on your screen!</h2>
+        <h2>Ready players</h2>
+        {ready.map(
+          (player) => {
+            return <h3>{player} is ready!</h3> 
+          })
+        }
         <Button  onClick = {() => nextRound()}>Next round</Button>
       </Fragment>
     }
@@ -92,14 +103,12 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
       <h2>Players in Lobby</h2>
       {
         players.map(
-          (player) => <h3>{player}</h3>
-        )
-      }
-      <h2>Ready Players</h2>
-      {
-        ready.map(
-          (player) => <h3>{player}</h3>
-        )
+          (player) => {
+            if (ready.includes(player)) {
+              return <h3>{player} is Ready!</h3>
+            } else
+            return <h3>{player}</h3>
+        })
       }
       <Button onClick = {() => startGame()}>Start Game</Button>
     </Fragment>

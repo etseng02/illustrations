@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { statement } from '@babel/template';
+import Button from './Button'
 
 export default function Guess(props) {
 
@@ -21,6 +22,7 @@ export default function Guess(props) {
     <Fragment>
       <h1 >Guess what this is!</h1>
 
+
       <input
           // value={guess}
           type="text"
@@ -34,6 +36,7 @@ export default function Guess(props) {
             }))
           }}
         />
+        <Button onClick = {() => props.ready()}>Ready</Button>
         <img src={props.imageSource}></img>
         <div id="imageContainer"></div>
 
