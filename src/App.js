@@ -356,7 +356,7 @@ function App() {
        </Fragment>
       }
 
-      {state.roomID && !state.hostMachine && //If the client receives room ID and is not the host machine, put client in waiting room
+      {state.roomID && !state.hostMachine && state.phase === "" &&//If the client receives room ID and is not the host machine, put client in waiting room
       <Fragment>
         <Waiting
           name={state.name}

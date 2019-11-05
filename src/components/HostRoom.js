@@ -4,11 +4,6 @@ import './HostRoom.css'
 
 export default function HostRoom({ ready = "", players = [], phase = "", roomID, startGame, nextRound, endGameInfo }) {
 
-  // const [ready] = useState(props.ready || "");
-  // const [players] = useState(props.players || "");
-  // const [statePhase, setPhase] = useState(props.phase || "");
-
-  //let readyPlayers = players.filter(element => ready.includes(element));
   function convertToImage(blob) {
     const arrayBufferView = new Uint8Array(blob.data);
     const blobData = new Blob([arrayBufferView], { type: "image/png" });
@@ -17,13 +12,7 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
   };
 
   console.log("on hostroom", endGameInfo);
-  // for(let data of endGameInfo) {
-  //   let drawingImg = new Image();
-  //   drawingImg.src = convertToImage(data.info.drawings);
-  //   let container = document.getElementById("imageContainer");
-  //   container.appendChild(drawingImg);
-  //   console.log(data.info.drawings);
-  // }
+
   let imageArray = [];
   let drawingImages = endGameInfo.map(image => {
     console.log("these are the infos", image);
@@ -54,8 +43,6 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
     </Fragment>
     )
 
-    // console.log(image.info.drawings[0].data);
-    // return <img src={convertToImage(image.info.drawings)}/>
   });
 
   return (
@@ -79,7 +66,7 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
 
     {phase === "endgame" &&
       <Fragment>
-        <h1>The game has ended</h1>
+        <h1 id="end-title">The game has ended</h1>
         <div id="imageContainer">{drawingImages}</div>
 
       </Fragment>
