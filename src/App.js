@@ -62,7 +62,7 @@ function App() {
   }
 
   function startGame(){
-    setState(prevState => ({ ...prevState, round: 0 }))
+    setState(prevState => ({ ...prevState, round: 0, ready: [] }))
 
     socket.emit('startGame', state.roomID);
   }
@@ -88,7 +88,8 @@ function App() {
 
   useEffect(() =>{
     socket.on('Ready', function (name) {
-      //console.log("I have received a message")
+      console.log("ready players: ",state.ready)
+ 
       if (state.ready.includes(name)){
         //do nothing
         console.log("the ready player is already in ready state")
@@ -96,7 +97,17 @@ function App() {
           setState(prevState => ({ ...prevState, ready: [ ...prevState.ready, name] }))
       }
     });
-  },[])
+    return () => {
+      socket.off('Ready')
+    }
+  },[state.ready])
+
+  useEffect(() =>{
+    console.log(state.players, state.ready)
+    if (state.ready.length === state.players.length && state.gameID && state.hostMachine === true){
+      socket.emit('nextRound', state.gameID, state.round, state.roomID);
+    }
+  },[state.ready])
 
   useEffect(()=>{
   //   console.log('HOOK REDEFINED', state);
@@ -182,7 +193,7 @@ function App() {
       console.log("received a message for next round ", game, round)
       console.log("this is the current round", state.round)
       if (state.hostMachine === true) {
-        setState(prevState => ({ ...prevState, round: round+1}))
+        setState(prevState => ({ ...prevState, round: round+1, ready: []}))
         console.log("I am the host machine you have no power over me")
         //do nothing
       } else if (state.round % 2 === 0) {
@@ -312,6 +323,7 @@ function App() {
       {state.phase === "draw" && !state.hostMachine &&//Draw Phase
       <Fragment>
         <h3 style={{ textAlign: 'center' }}>Draw this: {state.prompt}</h3>
+        <Button onClick = {() => ready()}>Ready</Button>
         <Canvas ref={ref => canvasData.current = ref }
                 onData={(data) => holdIt(data)} />
       </Fragment>
@@ -320,10 +332,10 @@ function App() {
       {state.phase === "guess" && !state.hostMachine &&//Guess Phase
         <Fragment>
           <Guess
-          setGuess={setState}
-          
-          imageSource={convertToImage(state.drawing)}
-          ref={ref => retrieveGuess.current = ref }
+            ready={ready}
+            setGuess={setState}
+            imageSource={convertToImage(state.drawing)}
+            ref={ref => retrieveGuess.current = ref }
           />
         </Fragment>
       }

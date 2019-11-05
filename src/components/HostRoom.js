@@ -11,8 +11,13 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
     return imageUrl;
   };
 
-  console.log("on hostroom", endGameInfo);
-
+  // for(let data of endGameInfo) {
+  //   let drawingImg = new Image();
+  //   drawingImg.src = convertToImage(data.info.drawings);
+  //   let container = document.getElementById("imageContainer");
+  //   container.appendChild(drawingImg);
+  //   console.log(data.info.drawings);
+  // }
   let imageArray = [];
   let drawingImages = endGameInfo.map(image => {
     console.log("these are the infos", image);
@@ -50,21 +55,29 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
 
     {phase === "draw" &&
       <Fragment>
-        <div className="drawPhaseStyle">
-          <h1>DRAW PHASE</h1>
-          <h2>Draw the prompt on your screen!</h2>
-          <Button  onClick = {() => nextRound()}>Next round</Button>
-        </div>
+        <h1>DRAW PHASE</h1>
+        <h2>Draw the prompt on your screen!</h2>
+        <h2>Ready players</h2>
+        {ready.map(
+          (player) => {
+            return <h3>{player} is ready!</h3> 
+          })
+        }
+        <Button  onClick = {() => nextRound()}>Next round</Button>
       </Fragment>
     }
 
     {phase === "guess" &&
       <Fragment>
-        <div className="guessPhaseStyle">
-          <h1>GUESS PHASE</h1>
-          <h2>Guess the picture on your screen!</h2>
-          <Button  onClick = {() => nextRound()}>Next round</Button>
-        </div>
+        <h1>GUESS PHASE</h1>
+        <h2>Guess the picture on your screen!</h2>
+        <h2>Ready players</h2>
+        {ready.map(
+          (player) => {
+            return <h3>{player} is ready!</h3> 
+          })
+        }
+        <Button  onClick = {() => nextRound()}>Next round</Button>
       </Fragment>
     }
 
@@ -79,22 +92,18 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
 
     {phase === "" &&
     <Fragment>
-      <div className="hostRoom">
-        <h1>Room Code: {roomID}</h1>
-        <h2>Players in Lobby</h2>
-        {
-          players.map(
-            (player) => <h3>{player}</h3>
-          )
-        }
-        <h2>Ready Players</h2>
-        {
-          ready.map(
-            (player) => <h3>{player}</h3>
-          )
-        }
-        <Button onClick = {() => startGame()}>Start Game</Button>
-      </div>
+      <h1>Room Code: {roomID}</h1>
+      <h2>Players in Lobby</h2>
+      {
+        players.map(
+          (player) => {
+            if (ready.includes(player)) {
+              return <h3>{player} is Ready!</h3>
+            } else
+            return <h3>{player}</h3>
+        })
+      }
+      <Button onClick = {() => startGame()}>Start Game</Button>
     </Fragment>
     }
     </Fragment>
