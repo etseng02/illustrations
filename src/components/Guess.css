@@ -1,0 +1,16 @@
+div.playerGuessStyle {
+  display:flex;
+  flex-direction: column;
+  width: 390px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 3em;
+  background-color: #FFFFFF;
+  border: 2px solid #87F2FB;
+  border-radius: 10px;
+  padding: 1em;
+  box-shadow: 5px 5px 8px grey;
+}

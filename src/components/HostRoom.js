@@ -50,17 +50,21 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
 
     {phase === "draw" &&
       <Fragment>
-        <h1>DRAW PHASE</h1>
-        <h2>Draw the prompt on your screen!</h2>
-        <Button  onClick = {() => nextRound()}>Next round</Button>
+        <div className="drawPhaseStyle">
+          <h1>DRAW PHASE</h1>
+          <h2>Draw the prompt on your screen!</h2>
+          <Button  onClick = {() => nextRound()}>Next round</Button>
+        </div>
       </Fragment>
     }
 
     {phase === "guess" &&
       <Fragment>
-        <h1>GUESS PHASE</h1>
-        <h2>Guess the picture on your screen!</h2>
-        <Button  onClick = {() => nextRound()}>Next round</Button>
+        <div className="guessPhaseStyle">
+          <h1>GUESS PHASE</h1>
+          <h2>Guess the picture on your screen!</h2>
+          <Button  onClick = {() => nextRound()}>Next round</Button>
+        </div>
       </Fragment>
     }
 
@@ -75,20 +79,22 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
 
     {phase === "" &&
     <Fragment>
-      <h1>Room Code: {roomID}</h1>
-      <h2>Players in Lobby</h2>
-      {
-        players.map(
-          (player) => <h3>{player}</h3>
-        )
-      }
-      <h2>Ready Players</h2>
-      {
-        ready.map(
-          (player) => <h3>{player}</h3>
-        )
-      }
-      <Button onClick = {() => startGame()}>Start Game</Button>
+      <div className="hostRoom">
+        <h1>Room Code: {roomID}</h1>
+        <h2>Players in Lobby</h2>
+        {
+          players.map(
+            (player) => <h3>{player}</h3>
+          )
+        }
+        <h2>Ready Players</h2>
+        {
+          ready.map(
+            (player) => <h3>{player}</h3>
+          )
+        }
+        <Button onClick = {() => startGame()}>Start Game</Button>
+      </div>
     </Fragment>
     }
     </Fragment>
