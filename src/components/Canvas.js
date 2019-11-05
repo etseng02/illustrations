@@ -3,6 +3,7 @@ import Pusher from 'pusher-js';
 import reactCSS from 'reactcss';
 import eraser from '../images/eraser.png';
 import pencil from '../images/pencil.png';
+import trash from '../images/trash.png';
 import { CirclePicker } from 'react-color';
 
 class Canvas extends Component {
@@ -25,9 +26,10 @@ class Canvas extends Component {
   //COLOR PICKER
   state = {
     drawing: null,
-    pencilClicked: "#FFFFFF",
-    eraserClicked: "#FFFFFF",
-    displayColorPicker: false,
+    pencilBackgroundColor: "#FFFFFF",
+    eraserBackgroundColor: "#FFFFFF",
+    trashBackgroundColor: "#FFFFFF",
+    trashDown: false,
     color: "#000"
   };
 
@@ -42,8 +44,8 @@ class Canvas extends Component {
   handleChange = (color) => {
     this.ctx.lineWidth = 5;
     this.setState({ color: color.hex })
-    this.setState({ pencilClicked: "#a2eff5" });
-    this.setState({ eraserClicked: "#FFFFFF" })
+    this.setState({ pencilBackgroundColor: "#a2eff5" });
+    this.setState({ eraserBackgroundColor: "#FFFFFF" })
   };
 
   convertToBlob() {
@@ -172,16 +174,30 @@ class Canvas extends Component {
     console.log("pencil clicked");
     this.setState({ color: "#000"});
     this.ctx.lineWidth = 5;
-    this.setState({ pencilClicked: "#a2eff5" });
-    this.setState({ eraserClicked: "#FFFFFF" });
+    this.setState({ pencilBackgroundColor: "#a2eff5" });
+    this.setState({ eraserBackgroundColor: "#FFFFFF" });
   }
 
   onEraserClick = () => {
     console.log("eraser clicked");
     this.setState({ color: "#FFFFFF"});
     this.ctx.lineWidth = 20;
-    this.setState({ eraserClicked: "#a2eff5" });
-    this.setState({ pencilClicked: "#FFFFFF" });
+    this.setState({ eraserBackgroundColor: "#a2eff5" });
+    this.setState({ pencilBackgroundColor: "#FFFFFF" });
+  }
+
+  onTrashClick = () => {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // const toggleColor = this.state.trashClicked === "#C0C0C0" ? "#ff0000" : "#C0C0C0";
+    // this.setState({ trashClicked: toggleColor });
+  }
+
+  onMousedownTrash = () => {
+    this.setState({ trashBackgroundColor: "#a2eff5" });
+  }
+
+  onMouseupTrash = () => {
+    this.setState({ trashBackgroundColor: "#FFFFFF" });
   }
 
   render() {
@@ -221,14 +237,21 @@ class Canvas extends Component {
           width: '25px',
           margin: '0px 0px 0px 10px',
           borderRadius: '5px',
-          background: this.state.pencilClicked,
+          background: this.state.pencilBackgroundColor,
         },
         eraserStyle: {
           height: '25px',
           width: '25px',
           margin: '0px 0px 0px 10px',
           borderRadius: '5px',
-          background: this.state.eraserClicked,
+          background: this.state.eraserBackgroundColor,
+        },
+        trashStyle: {
+          height: '25px',
+          width: '25px',
+          margin: '0px 0px 0px 10px',
+          borderRadius: '5px',
+          background: this.state.trashBackgroundColor,
         },
         sample: {
           padding: '20px',
@@ -247,6 +270,16 @@ class Canvas extends Component {
         </div> : null }
         <img id="pencilImg" src={pencil} alt={'pencil'} style={styles.pencilStyle} onClick={this.onPencilClick}/>
         <img id="eraserImg" src={eraser} alt={'eraser'} style={styles.eraserStyle} onClick={this.onEraserClick}/>
+        <img id="trashImg" 
+            src={trash} 
+            alt={'trash'} 
+            style={styles.trashStyle} 
+            onClick={this.onTrashClick}
+            onMouseDown={this.onMousedownTrash}
+            onMouseUp={this.onMouseupTrash}
+            onTouchStart={this.onMousedownTrash}
+            onTouchEnd={this.onMouseupTrash}
+          />
       </div>
       <div style={{textAlign: 'center'}}>
         <canvas
