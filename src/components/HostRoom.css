@@ -68,3 +68,37 @@ h1#end-title{
   background-color: #00E9FF;
   text-shadow: 4px 4px black;
 }
+
+div.drawingAndGuess {
+  display:flex;
+  flex-direction: column;
+  width: 375px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 3em;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  border: 2px solid orangered;
+  padding: 1em;
+  box-shadow: 5px 5px 8px grey;
+}
+
+div.originalWord {
+  display:flex;
+  flex-direction: column;
+  width: 20%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 3em;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  border: 2px solid orangered;
+  padding: 1em;
+  box-shadow: 5px 5px 8px grey;
+}
