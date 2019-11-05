@@ -63,6 +63,7 @@ io.on('connection', function (socket) {
   //socket.emit('news', { hello: 'world' });
   //console.log('a user connected');
 
+
   socket.on('createRoom', function (data) {
     console.log(data);
       db.query(`
@@ -87,41 +88,60 @@ io.on('connection', function (socket) {
     room = room.toUpperCase()
     console.log("THIS IS THE ROOM INPUT", room)
 
-    db.query(`
-      INSERT INTO players (name, room_id, player_position)
-        VALUES ($1, 
-          (SELECT id FROM rooms WHERE rooms.code = $2), 
-          (SELECT COUNT (players.id) FROM players
-            JOIN rooms ON rooms.id = players.room_id
-            WHERE rooms.code = $2) +1);
-    `, [name, room])
-    .then((res) => {
-      return db.query(`
-        SELECT player_position FROM players 
-        WHERE players.name = $1 AND players.room_id = (SELECT rooms.id FROM rooms WHERE rooms.code = $2)
-      `, [name, room])
-    }).then((res) => {
-      socket.join(room);
-      return res
-    })
-    .then((res) => {
-      
-      console.log(res.rows[0].player_position)
-      socket.name = name;
-      io.in(room).emit('joinRoom', name, res.rows[0].player_position)
-      console.log(`${socket.name} has joined ${room}`)
-      //add db query here use name and room
-      
-      // var clients = io.sockets.adapter.rooms[room].sockets;   
-      // console.log(clients)
-      socket.to(room).emit('hostMode', `${name}`);
 
-    }).catch((err) => {
-      console.log(err)
+    db.query(`
+    SELECT * FROM players 
+    WHERE name = $1 AND room_id = (SELECT id FROM rooms WHERE code = $2)
+    `, [name, room])
+
+    .then((res) => {
+      console.log("row count", res.rowCount)
+      if (res.rowCount === 0) {
+        return db.query(`
+        INSERT INTO players (name, room_id, player_position)
+          VALUES ($1, 
+            (SELECT id FROM rooms WHERE rooms.code = $2), 
+            (SELECT COUNT (players.id) FROM players
+              JOIN rooms ON rooms.id = players.room_id
+              WHERE rooms.code = $2) +1)
+          RETURNING player_position;
+      `, [name, room])
+      .then((res) => {
+        socket.join(room);
+        return res
+      })
+      .then((res) => {
+      
+        console.log(res.rows[0].player_position)
+        socket.name = name;
+        io.in(room).emit('joinRoom', name, res.rows[0].player_position)
+        console.log(`${socket.name} has joined ${room}`)
+        //add db query here use name and room
+        
+        // var clients = io.sockets.adapter.rooms[room].sockets;   
+        // console.log(clients)
+        socket.to(room).emit('hostMode', `${name}`);
+
+      }).catch((err) => {
+        console.log(err)
+      })
+
+      } else {
+        console.log("same name has been detected sending error message")
+        socket.to(room).emit('joinRoom', name, 'error')
+
+      }
     })
+    .catch((err) => {
+      console.error(err)
+    })
+
+    
     
     
   });
+
+
 
   socket.on('Ready', function (room, name) {
     console.log(`${name} is ready in ${room}`)
