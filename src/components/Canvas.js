@@ -261,8 +261,7 @@ class Canvas extends Component {
     });
     return (
       <Fragment>
-      <div>
-      <Button onClick = {() => this.ready()}>Ready</Button>
+      <div id="ready-colour-picker">
         <div style={ styles.swatch } onClick={ this.handleClick }>
           <div style={ styles.color } />
         </div>
@@ -282,6 +281,7 @@ class Canvas extends Component {
             onTouchStart={this.onMousedownTrash}
             onTouchEnd={this.onMouseupTrash}
           />
+      <Button id="ready-draw" onClick = {() => this.props.ready()}>Ready</Button>
       </div>
       <div style={{textAlign: 'center'}}>
         <canvas

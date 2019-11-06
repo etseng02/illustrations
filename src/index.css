@@ -31,6 +31,28 @@ code {
   margin-bottom: 0px;
 }
 
+#ready-colour-picker {
+  display: flex;
+  background-color: #FFFFFF;
+  align-items: center;
+  margin: 2em;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  padding-right:1em;
+  padding-left:1em;
+
+
+}
+
+
+#ready-draw {
+  margin-left: auto;
+  display: flex;
+  position: relative;
+  float: right;
+  justify-content: right;
+  text-align: right;
+}
 
 
 
