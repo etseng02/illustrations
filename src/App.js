@@ -20,7 +20,7 @@ function App() {
   const { current: socket } = useRef(io('http://localhost:8080'));
 
   //USE THIS FOR HOSTING OTHER DEVICES: (SHOULD BE YOUR LOCAL IP)
-  // const { current: socket } = useRef(io('http://172.46.0.158:8080'));
+  //const { current: socket } = useRef(io('http://172.46.0.158:8080'));
   
   const [state, setState] = useState({
     roomID: "",
@@ -327,10 +327,11 @@ function App() {
 
       {state.phase === "draw" && !state.hostMachine &&//Draw Phase
       <Fragment>
-        <h3 style={{ textAlign: 'center' }}>Draw this: {state.prompt}</h3>
-        <Button onClick = {() => ready()}>Ready</Button>
+        <h3 id="draw-this-title"style={{ textAlign: 'center' }}>Draw this: {state.prompt}</h3>
+
         <Canvas ref={ref => canvasData.current = ref }
-                onData={(data) => holdIt(data)} />
+                onData={(data) => holdIt(data)}
+                ready={ready} />
       </Fragment>
       }
 

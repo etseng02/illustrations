@@ -64,7 +64,7 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
     {phase === "draw" &&
       <Fragment>
         <div className="drawPhaseStyle">
-          <h1>DRAW PHASE</h1>
+          <h1 className="phase-title">DRAW PHASE</h1>
           <h2>Draw the prompt on your screen!</h2>
           <h2>Ready players</h2>
           {ready.map(
@@ -80,7 +80,7 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
     {phase === "guess" &&
       <Fragment>
         <div className="guessPhaseStyle">
-          <h1>GUESS PHASE</h1>
+          <h1 className="phase-title">GUESS PHASE</h1>
           <h2>Guess the picture on your screen!</h2>
           <h2>Ready players</h2>
           {ready.map(
@@ -95,7 +95,7 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
 
     {phase === "endgame" &&
       <Fragment>
-        <h1 id="end-title">The game has ended</h1>
+        <h1 id="end-title" className="phase-title">The game has ended</h1>
         <div id="imageContainer">{drawingImages}</div>
 
       </Fragment>

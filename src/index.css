@@ -18,6 +18,20 @@ code {
     monospace;
 }
 
+#draw-this-title {
+  font-size: 2em;
+  text-shadow: 2px 2px orangered;
+  margin-top:0px;
+  background-color: #8D8D8D;
+  color: white;
+  width: 100%;
+  padding-top:0.5em;
+  padding-bottom:0.5em;
+  border-radius: 10px;
+  margin-bottom: 0px;
+}
+
+
 
 
 @media (max-width: 600px) {

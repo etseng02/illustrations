@@ -26,9 +26,10 @@ div.drawPhaseStyle {
   margin-top: 3em;
   background-color: #FFFFFF;
   border-radius: 10px;
-  border: 2px solid #87F2FB;
-  padding: 1em;
+  border: 10px solid #87F2FB;
   box-shadow: 5px 5px 8px grey;
+  padding-bottom: 1em;
+  
 }
 
 div.guessPhaseStyle {
@@ -43,9 +44,10 @@ div.guessPhaseStyle {
   margin-top: 3em;
   background-color: #FFFFFF;
   border-radius: 10px;
-  border: 2px solid #87F2FB;
-  padding: 1em;
+  border: 10px solid #87F2FB;
   box-shadow: 5px 5px 8px grey;
+  padding-bottom: 1em;
+
 }
 
 /* div.final{
@@ -101,4 +103,24 @@ div.originalWord {
   border: 2px solid orangered;
   padding: 1em;
   box-shadow: 5px 5px 8px grey;
+}
+
+.phase-title {
+  font-size: 2em;
+  text-shadow: 2px 2px orangered;
+  margin-top:0px;
+  background-color: #8D8D8D;
+  color: white;
+  width: 100%;
+  padding-top:0.5em;
+  padding-bottom:0.5em;
+  border-radius: 10px;
+}
+
+@media (max-width: 1000px) {
+
+  div.hostRoom {
+    width: 30%;
+  }
+
 }

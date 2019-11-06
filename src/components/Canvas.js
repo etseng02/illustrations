@@ -5,6 +5,7 @@ import eraser from '../images/eraser.png';
 import pencil from '../images/pencil.png';
 import trash from '../images/trash.png';
 import { CirclePicker } from 'react-color';
+import Button from './Button';
 
 class Canvas extends Component {
   constructor(props) {
@@ -261,6 +262,7 @@ class Canvas extends Component {
     return (
       <Fragment>
       <div>
+      <Button onClick = {() => this.ready()}>Ready</Button>
         <div style={ styles.swatch } onClick={ this.handleClick }>
           <div style={ styles.color } />
         </div>
