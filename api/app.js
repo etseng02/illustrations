@@ -60,9 +60,6 @@ app.get('/', function (req, res) {
 
 //Socket connection to handle Room Creation Logic
 io.on('connection', function (socket) {
-  //socket.emit('news', { hello: 'world' });
-  //console.log('a user connected');
-
 
   socket.on('createRoom', function (data) {
     console.log(data);
@@ -76,8 +73,6 @@ io.on('connection', function (socket) {
       socket.name = "host";
       socket.join(data.roomCode);
       console.log("A new room has been created:", data.roomCode)
-      //console.log("These are all the current rooms: ", io.sockets.adapter.rooms)\
-      //console.log(Object.keys(socket.rooms))
         
       }).catch((err)=>{
         console.error(err)
@@ -86,8 +81,6 @@ io.on('connection', function (socket) {
 
   socket.on('joinRoom', function (name, room) {
     room = room.toUpperCase()
-    console.log("THIS IS THE ROOM INPUT", room)
-
 
     db.query(`
     SELECT * FROM players 
@@ -95,7 +88,6 @@ io.on('connection', function (socket) {
     `, [name, room])
 
     .then((res) => {
-      console.log("row count", res.rowCount)
       if (res.rowCount === 0) {
         return db.query(`
         INSERT INTO players (name, room_id, player_position)
@@ -112,14 +104,10 @@ io.on('connection', function (socket) {
       })
       .then((res) => {
       
-        console.log(res.rows[0].player_position)
         socket.name = name;
         io.in(room).emit('joinRoom', name, res.rows[0].player_position)
         console.log(`${socket.name} has joined ${room}`)
-        //add db query here use name and room
         
-        // var clients = io.sockets.adapter.rooms[room].sockets;   
-        // console.log(clients)
         socket.to(room).emit('hostMode', `${name}`);
 
       }).catch((err) => {
@@ -128,7 +116,6 @@ io.on('connection', function (socket) {
 
       } else {
         console.log("same name has been detected sending error message")
-        //socket.to(room).emit('joinRoom', name, 'error')
         socket.emit('joinRoom', name, 'error')
 
       }
@@ -151,7 +138,7 @@ io.on('connection', function (socket) {
 
   socket.on('startGame', function (room) {
     console.log(`${room} has requested to start a game`)
-    //insert start game query logic here
+
     db.query(`
       INSERT INTO games (room_id)
       VALUES ((SELECT rooms.id FROM rooms WHERE rooms.code = $1))
@@ -170,7 +157,6 @@ io.on('connection', function (socket) {
     })
     
     .then((res) => {
-      // console.log(res)
       let numberOfPlayers = parseInt(res.rows[0].count)
       
       let prompts = [];
@@ -178,11 +164,8 @@ io.on('connection', function (socket) {
       for (let i = 1; i <= res.rows[0].count; i++) {
         prompts.push(prompt());
       }
-      // console.log(prompts, playerArray);
-      //socket.to(room).emit('startGame', 'start');
+      
       for(let i = 1; i <= res.rows[0].count; i++) {
-        // console.log(prompts[i-1])
-        // console.log(playerArray[i-1])
 
         db.query(`
           INSERT INTO prompts (game_id, info)
@@ -198,8 +181,8 @@ io.on('connection', function (socket) {
       SELECT info, id FROM prompts
       WHERE game_id = (SELECT id FROM games WHERE games.room_id = (SELECT id FROM rooms WHERE code = $1));
       `, [room])
+
     }).then((res) => {
-      // console.log("this is adding id value", res.rows)
       let wordArray = [];
       let positionArray = [];
       let idArray = [];
@@ -210,17 +193,13 @@ io.on('connection', function (socket) {
         positionArray.push(jsonData.queue[0])
         idArray.push(res.rows[i].id)
       }
-      // console.log("these are the arrays", wordArray, positionArray)
       let finalArray = [];
       for(let i = 0; i < wordArray.length; i++) {
         finalArray.push([wordArray[i], positionArray[i], idArray[i]]);
       }
-      // console.log(finalArray);
-
-      // ADD NEW ARRAY FOR PLAYER NAMES HERE!!!
 
       io.in(room).emit('startGame', finalArray)
-      //socket.to(room).emit('startGame', finalArray);
+
     })
     .catch((err) => {
       console.log(err)
@@ -265,13 +244,11 @@ io.on('connection', function (socket) {
           .then((res) => {
 
             resultsArray = res.rows;
-            // console.log("QUEUE:", resultsArray[0].info.queue)
 
             for (let i = 0; i < resultsArray.length; i++) {
               let queue = resultsArray[i].info.queue;
               resultQueues.push(queue);
             }
-            // console.log(resultQueues)
 
             return db.query(`
               SELECT name, player_position FROM players
@@ -308,14 +285,13 @@ io.on('connection', function (socket) {
         WHERE game_id = $1;
         `, [game])
         .then((res) => {
-          // console.log("this is the response", res.rows)
           let infoArray = res.rows;
           let submissionData = [];
 
           if (round % 2 === 0) {
             round = round + 1;
             for (let i = 0; i < infoArray.length; i++) {
-              // why does this not need to be parsed?
+              
               let infoQueue = infoArray[i].info.queue
               let jsonInfo = infoArray[i].info
               let drawingsLength = jsonInfo.drawings.length - 1;
@@ -352,16 +328,12 @@ io.on('connection', function (socket) {
   })
 
   socket.on('storeInfo', function(promptID, gameID, content, round){
-    //console.log("Testing game and round here", game, round, room)
-    // console.log("Content received", promptID, content, gameID, round)
-    // console.log("this is the ocntent", content);
+
     db.query(`
       SELECT info FROM prompts
       WHERE prompts.id = $1
     `, [promptID])
     .then((res) => {
-      // console.log(res.rows)
-      // console.log(res.rows[0]);
       let jsonInfo = ''
       if (round === 0 ) {
         jsonInfo = JSON.parse(res.rows[0].info)
@@ -373,21 +345,19 @@ io.on('connection', function (socket) {
         jsonInfo.drawings.push(content)
       } else{
         jsonInfo.guesses.push(content)
-        console.log(jsonInfo.guesses)
+
       } 
       db.query(`
         UPDATE prompts
         SET info = $1
         WHERE prompts.id = $2
       `, [JSON.stringify(jsonInfo), promptID])
-      // console.log("this is th json object", jsonInfo)
+
     })
     .catch((err) => {
       console.error(err);
     })
   })
-
-
 });
 
 
