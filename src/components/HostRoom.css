@@ -91,7 +91,9 @@ div.drawingAndGuess {
   background-color: #FFFFFF;
   /* border-radius: 10px; */
   border: 4px solid orangered;
-  padding: 1em;
+  /* padding: 1em; */
+  padding-left:1em;
+  padding-right:1em;
   box-shadow: 5px 5px 8px grey;
 }
 
@@ -109,12 +111,33 @@ div.drawingAndGuess {
   border-bottom-right-radius: 10px;
 }
 
+h3#player-drawing {
+  width: 370px;
+  background-color: #8D8D8D;
+  margin: 0px;
+  padding: 1em;
+  /* border-radius: 10px; */
+  color: #FFFFFF
+
+}
+
 h3#player-guess {
   background-color: #8D8D8D;
   margin: 0px;
   padding: 1em;
+  /* border-radius: 10px; */
+  color: #FFFFFF;
+  width: 370px;
+}
+
+h3#final-original-word{
+  background-color: #8D8D8D;
+  margin: 0px;
+  padding: 1em;
   border-radius: 10px;
-  color: #FFFFFF
+  color: #FFFFFF;
+  text-shadow: 2px 2px orangered;
+  margin-bottom: 1em;
 }
 
 

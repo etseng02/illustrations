@@ -43,14 +43,15 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
             return (
               <Fragment>
               <div className="drawingAndGuess">
-              <h3>{image.info.player_names[playerNumber]}'s drawing:</h3>
+              <h3 id="player-drawing">{image.info.player_names[playerNumber]}'s drawing:</h3>
               <img src={convertToImage(images)}/>
-              {image.info.guesses[guessNumber]? <h3 id="player-guess">{image.info.player_names[playerNumber+1]} guessed: {image.info.guesses[guessNumber]}</h3>: null}
+              {image.info.guesses[guessNumber]? <h3 id="player-guess">{image.info.player_names[playerNumber+1]} guessed: {image.info.guesses[guessNumber]}</h3>: <h3 id="final-original-word">FINAL RESULT: {image.info.word.toUpperCase()}</h3>}
               </div>
               
             </Fragment>
             )}
           )}
+          {/* <h3 id="final-original-word">Original Word: {image.info.word}</h3> */}
 
       </div>
     </Fragment>
