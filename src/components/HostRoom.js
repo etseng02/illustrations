@@ -45,7 +45,7 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
               <div className="drawingAndGuess">
               <h3>{image.info.player_names[playerNumber]}'s drawing:</h3>
               <img src={convertToImage(images)}/>
-              {image.info.guesses[guessNumber]? <h3>{image.info.player_names[playerNumber+1]} guessed: {image.info.guesses[guessNumber]}</h3>: null}
+              {image.info.guesses[guessNumber]? <h3 id="player-guess">{image.info.player_names[playerNumber+1]} guessed: {image.info.guesses[guessNumber]}</h3>: null}
               </div>
               
             </Fragment>
