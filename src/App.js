@@ -7,6 +7,7 @@ import HostRoom from './components/HostRoom'
 import Waiting from './components/Waiting'
 import Header from './components/Header'
 import Guess from './components/Guess'
+import Loading from './components/Loading'
 const io = require('socket.io-client');
 
 
@@ -110,18 +111,12 @@ function App() {
   },[state.ready])
 
   useEffect(()=>{
-  //   console.log('HOOK REDEFINED', state);
     socket.on('startGame', (data) => {
       console.log("starting game command has been issued")
-      console.log("this is the data received:",data)
-      // console.log("thats the state son:",state)
       data.forEach((wordPair)=>{
-        // console.log(wordPair, state.playerPosition)
         if (wordPair[1] === state.playerPosition) {
-          // console.log('MATCHED!!!');
           setState(prevState => ({ ...prevState, round: 0, prompt: wordPair[0], promptID: wordPair[2]}))
         } else {
-          // console.log('DID NOT MATCH', wordPair[1], state.playerPosition);
         }
       })
       console.log(state.hostMachine)
@@ -138,9 +133,6 @@ function App() {
 
   useEffect(()=>{
     socket.on('joinRoom', function (name, position) {
-      // console.log(`Receiving a player position for ${name} and assigning ${position}`)
-      // console.log ("this is the client name: ", state.name)
-      // console.log ("this is the server name: ", name)
       console.log(`Receiving a player position for ${name} and assigning ${position}`)
       if (name === state.name && position === "error" && state.playerPosition === null) {
         console.log('nah bro')
@@ -195,6 +187,7 @@ function App() {
     socket.on('nextRound', function (game, round) {
       console.log("received a message for next round ", game, round)
       console.log("this is the current round", state.round)
+      // setState(prevState => ({ ...prevState, phase: "loading"}))
       if (state.hostMachine === true) {
         setState(prevState => ({ ...prevState, round: round+1, ready: []}))
         console.log("I am the host machine you have no power over me")
@@ -203,23 +196,17 @@ function App() {
           canvasData.current.convertToBlob();
           console.log("this round is even! setting next round to odd!")
         } else {
-          socket.emit('')
+          // socket.emit('')
           console.log("this round is odd! setting next round to even!")
           socket.emit('storeInfo', state.promptID, state.gameID, state.guess, state.round);
-          
-          // setState(prevState => ({ ...prevState, }))
+          setState(prevState => ({ ...prevState, phase: "loading"}))
         }
-      //setState(prevState => ({ ...prevState, gameID: game }))
-    });
-    return () => {
-      socket.off('nextRound')
-    }
+      });
+      return () => {
+        socket.off('nextRound')
+      }
   },[state])
   
-  //delete later this is for testing purposes
-  function draw() {
-    setState({ ...state, phase: "draw" })
-  }
   
   function nextRound(data) {
     console.log("next round command has been sent")
@@ -230,11 +217,6 @@ function App() {
   const onButtonClick = () => {
     canvasData.current.convertToBlob();
     console.log("statedrawing", state.drawing);
-    // const imageSource = URL.createObjectURL(state.drawing);
-    // const container = document.getElementById("imageContainer");
-    // const img = new Image();
-    // img.src = imageSource;
-    // document.body.appendChild(img);
   };
 
   function convertToImage(blob) {
@@ -249,6 +231,7 @@ function App() {
       console.log("the drawing state has been set")
       console.log("emitting the following", state.promptID, state.gameID, state.drawing, state.gameID, state.round)
       socket.emit('storeInfo', state.promptID, state.gameID, state.drawing, state.round);
+      setState(prevState => ({ ...prevState, phase: "loading"}))
       //setState(prevState => ({ ...prevState, drawing: null}))
     } else if (state.drawing === null) {
       console.log("there is no drawing son!")
@@ -382,6 +365,16 @@ function App() {
           message="Waiting for Game to Start"
           onClick={ready}
         ></Waiting>
+      </Fragment>
+      }
+
+      {!state.hostMachine && state.phase === "loading" &&
+      <Fragment>
+        <Loading>
+
+        </Loading>
+      
+      
       </Fragment>
       }
 
