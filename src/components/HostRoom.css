@@ -95,6 +95,7 @@ div.drawingAndGuess {
   padding-left:1em;
   padding-right:1em;
   box-shadow: 5px 5px 8px grey;
+  margin-bottom: 2em;
 }
 
 .phase-title {

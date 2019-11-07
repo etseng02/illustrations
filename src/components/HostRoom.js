@@ -43,9 +43,9 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
             return (
               <Fragment>
               <div className="drawingAndGuess">
-              <h3 id="player-drawing">{image.info.player_names[playerNumber]}'s drawing:</h3>
+              {playerNumber === 0? <h3 id="player-drawing">{image.info.player_names[playerNumber]}'s drawing of {image.info.word}</h3>: <h3 id="player-drawing"> {image.info.player_names[playerNumber]}'s drawing of {image.info.guesses[guessNumber-1]}</h3>}
               <img src={convertToImage(images)}/>
-              {image.info.guesses[guessNumber]? <h3 id="player-guess">{image.info.player_names[playerNumber+1]} guessed: {image.info.guesses[guessNumber]}</h3>: <h3 id="final-original-word">FINAL RESULT: {image.info.word.toUpperCase()}</h3>}
+              {image.info.guesses[guessNumber]? <h3 id="player-guess">{image.info.player_names[playerNumber+1]} guessed: {image.info.guesses[guessNumber]}</h3>: <h3 id="final-original-word">{image.info.word.toUpperCase()} BECAME {image.info.guesses[guessNumber-1].toUpperCase()}</h3>}
               </div>
               
             </Fragment>
