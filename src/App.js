@@ -145,14 +145,14 @@ function App() {
     }
   },[state.name])
 
-  useEffect(()=>{
+  useEffect(()=>{ //once the name in state has successfully changed during Join Room, send to the server the name and roomID
     if (state.name){
       console.log("the name state has changed, sending to the server a joinRoom Command")
       socket.emit('joinRoom', state.name, state.roomID );
     }
   },[state.name])
 
-  useEffect(()=>{
+  useEffect(()=>{ 
     if (state.round === null) {
 
     } else if (state.round >= 0){
