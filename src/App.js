@@ -50,35 +50,34 @@ function App() {
     return newShortURL;
   };
 
-  function enterRoom(name, room){
+
+  //MAIN FUNCTIONS
+  function enterRoom(name, room){ //TRIGGERS ON JOINING ROOM
     console.log("the join room button has been pressed")
     setState({ ...state, name: name, roomID: room.toUpperCase() });
   }
   
-  function createRoom(){
+  function createRoom(){ //TRIGGERS ON MAIN PAGE
     let roomCode = generateRandomString()
     socket.emit('createRoom', { roomCode: `${roomCode}` });
-    
     setState({ ...state, hostMachine: true, roomID: roomCode })
   }
 
-  function startGame(){
+  function startGame(){ //TRIGGERS AFTER ROOM HAS BEEN CREATED. ONLY AVAILABLE ON HOST MACHINE
     setState(prevState => ({ ...prevState, round: 0, ready: [] }))
-
     socket.emit('startGame', state.roomID);
   }
 
-  function ready(){
-    //console.log(state.room, state.name, "is going to be sent to the server as ready")
+  function ready(){ //AVAILABLE ON MOBILE DEVICES ON CLIENT WAITING PAGE, DRAWING PAGE, AND GUESS PAGE
     socket.emit('Ready', state.roomID, state.name);
   }
 
-  useEffect(() => {
+  //EVENT HANDLERS AND HELPER FUNCTIONS BELOW
+
+  useEffect(() => { //Add player name to lobby by adding player to players array in state
     socket.on('hostMode', function (player) {
       console.log(`receiving a message that ${player} is joining the room.`)
-      //console.log(player)
       setState(prevState => ({ ...prevState, players: [ ...prevState.players, player] }))
-      //console.log(state.players)
     });
 
     return () => {
@@ -87,7 +86,7 @@ function App() {
 
   }, [])
 
-  useEffect(() =>{
+  useEffect(() =>{ //Add player name to ready state array when received
     socket.on('Ready', function (name) {
       console.log("ready players: ",state.ready)
  
@@ -103,14 +102,14 @@ function App() {
     }
   },[state.ready])
 
-  useEffect(() =>{
+  useEffect(() =>{ //Automatically start the next round once all players are ready.
     console.log(state.players, state.ready)
     if (state.ready.length === state.players.length && state.gameID && state.hostMachine === true){
       socket.emit('nextRound', state.gameID, state.round, state.roomID);
     }
   },[state.ready])
 
-  useEffect(()=>{
+  useEffect(()=>{ //Start the game when command has been received. Display prompt, set round to 0.
     socket.on('startGame', (data) => {
       console.log("starting game command has been issued")
       data.forEach((wordPair)=>{
@@ -131,11 +130,10 @@ function App() {
 
   },[state.playerPosition])
 
-  useEffect(()=>{
+  useEffect(()=>{ //Receive player position after attempting to join room. Will reset state if duplicate name is received
     socket.on('joinRoom', function (name, position) {
       console.log(`Receiving a player position for ${name} and assigning ${position}`)
       if (name === state.name && position === "error" && state.playerPosition === null) {
-        console.log('nah bro')
         setState(prevState => ({ ...prevState, name: "", roomID: "" }))
       } else if (name === state.name){
         console.log("the position has been assigned", position)
@@ -210,7 +208,6 @@ function App() {
   
   function nextRound(data) {
     console.log("next round command has been sent")
-    console.log("asdasdas", data);
     socket.emit('nextRound', state.gameID, state.round, state.roomID);
   }
   
@@ -237,8 +234,6 @@ function App() {
       console.log("there is no drawing son!")
     } else {
     console.log("the drawing state has been set for guess phase")
-    // console.log("the drawing")
-    //socket.emit('storeInfo', state.gameID, state.drawing, state.gameID, state.round);
     }
 
   },[state.drawing])
@@ -246,13 +241,9 @@ function App() {
   useEffect(()=>{
     socket.on('nextRoundInfo', function (submissionData) { //content, promptID, roundID, playerposition  received in array of arrays.
       console.log("I have received the content to start the next round", submissionData)
-      //console.log("player position: ", state.playerPosition)
-      //console.log("submission data player position: ", submissionData[3] )
       if (submissionData){
         console.log("submission data actuvated")
       submissionData.forEach((wordPair)=>{
-        //console.log(wordPair[3])
-        // console.log(wordPair, state.playerPosition)
         if (wordPair[3] === state.playerPosition) {
           console.log('MATCHED!!!')
           console.log("prompt:", wordPair[0])
@@ -266,7 +257,7 @@ function App() {
           }
 
         } else {
-          // console.log('DID NOT MATCH', wordPair[1], state.playerPosition);
+          // Do nothing
         }
       });
     }
@@ -308,7 +299,7 @@ function App() {
       }
 
 
-      {state.phase === "draw" && !state.hostMachine &&//Draw Phase
+      {state.phase === "draw" && !state.hostMachine &&//Client Draw Phase
       <Fragment>
         <h3 id="draw-this-title"style={{ textAlign: 'center' }}>Draw this: {state.prompt}</h3>
 
@@ -318,7 +309,7 @@ function App() {
       </Fragment>
       }
 
-      {state.phase === "guess" && !state.hostMachine &&//Guess Phase
+      {state.phase === "guess" && !state.hostMachine &&//Client Guess Phase
         <Fragment>
           <Guess
             ready={ready}
@@ -330,7 +321,7 @@ function App() {
       }
       
 
-      {state.roomID && state.hostMachine &&
+      {state.roomID && state.hostMachine &&//HostMachine requires RoomID to properly excecute the game
       <Fragment>
         <HostRoom
           ready={state.ready}
@@ -346,7 +337,7 @@ function App() {
       </Fragment>
       }
 
-      {!state.roomID && !state.hostMachine &&//When roomID is falsy, Join room field, name field, and create room field will be rendered
+      {!state.roomID && !state.hostMachine &&//If client does not have a roomID, Client is in homescreen
         <Fragment>
           <HomeScreen
             onClick={enterRoom}
@@ -368,7 +359,7 @@ function App() {
       </Fragment>
       }
 
-      {!state.hostMachine && state.phase === "loading" &&
+      {!state.hostMachine && state.phase === "loading" && //Client transtion from one round to another
       <Fragment>
         <Loading>
 
