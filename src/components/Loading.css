@@ -4,18 +4,37 @@
 
 /* =Elements style
 ---------------------- */
-.load-wrapp {
+h1#loading {
+  margin:0px;
 }
 
-.load-wrapp p {padding: 0 0 20px;}
-.load-wrapp:last-child {margin-right: 0;}
+.load-3 {
+  margin-top:2em;
+  font-family: 'Rubik', sans-serif;
+  margin-right: auto;
+  margin-left: auto;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 10px;
+  width: 50%;
+  text-align: center;
+  font-size: 2em;
+  text-shadow: 2px 2px orangered;
+  background-color: #8D8D8D;
+  color: white;
+  padding: 1em;
+  padding-bottom: 1.5em;
+}
+
 
 .line {
+  margin-top:0em;
   display: inline-block;
   width: 15px;
   height: 15px;
   border-radius: 15px;
-  background-color: #4b9cdb;
+  background-color: #00E9FF;
 }
 
 .ring-1 {

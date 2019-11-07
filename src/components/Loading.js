@@ -1,6 +1,5 @@
-import React, { Fragment, useState }  from "react";
+import React, { Fragment }  from "react";
 
-import Button from './Button'
 import './Loading.css'
 
 export default function Waiting(props) {
@@ -9,7 +8,7 @@ export default function Waiting(props) {
     <Fragment>
               <div class="load-wrapp">
               <div class="load-3">
-                <p>Loading 3</p>
+                <h1 id="loading">Please Hold</h1>
                 <div class="line"></div>
                 <div class="line"></div>
                 <div class="line"></div>
