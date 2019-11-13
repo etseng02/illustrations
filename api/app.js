@@ -50,7 +50,7 @@ var io = require('socket.io')(server);
 server.listen(8080);
 
 //CONNECTING OTHER DEVICE TO SOCKET: USE BELOW
-// server.listen(8080, '172.46.0.158');// < it has to be your local ip :)
+//server.listen(8080, '172.46.0.158');// < it has to be your local ip
 // WARNING: app.listen(80) will NOT work here!
 
 app.get('/', function (req, res) {
