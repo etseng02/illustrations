@@ -15,6 +15,10 @@ This is the client view during the draw phase. Players are prompted to use HTML 
 
 !["Mobile Client View"](https://github.com/etseng02/illustrations/blob/master/Docs/skedoodle1.png)
 
+## Requirements
+Node 10.16.3 or higher
+PostgreSQL 11.5 or higher
+
 ## Getting Started
 In order to run this app, you will need to run both the API server and the React client.
 
