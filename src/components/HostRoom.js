@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 import Button from './Button'
 import '../styles/HostRoom.css'
 
@@ -11,21 +11,14 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
     return imageUrl;
   };
 
-  const [state, setState] = useState({
-    word: "this word"
-  })
-  function animateClick() {
-    setState({ word: "that word" });
-  }
-
-  // for(let data of endGameInfo) {
-  //   let drawingImg = new Image();
-  //   drawingImg.src = convertToImage(data.info.drawings);
-  //   let container = document.getElementById("imageContainer");
-  //   container.appendChild(drawingImg);
-  //   console.log(data.info.drawings);
+  // const [state, setState] = useState({
+  //   word: "this word"
+  // })
+  // function animateClick() {
+  //   setState({ word: "that word" });
   // }
-  let imageArray = [];
+
+  // let imageArray = [];
   let drawingImages = endGameInfo.map(image => {
     console.log("these are the infos", image);
     let guessNumber = -1;
@@ -44,7 +37,7 @@ export default function HostRoom({ ready = "", players = [], phase = "", roomID,
               <Fragment>
               <div className="drawingAndGuess">
               {playerNumber === 0? <h3 id="player-drawing">{image.info.player_names[playerNumber]}'s drawing of {image.info.word}</h3>: <h3 id="player-drawing"> {image.info.player_names[playerNumber]}'s drawing of {image.info.guesses[guessNumber-1]}</h3>}
-              <img src={convertToImage(images)}/>
+              <img alt= "end result" src={convertToImage(images)}/>
               {image.info.guesses[guessNumber]? <h3 id="player-guess">{image.info.player_names[playerNumber+1]} guessed: {image.info.guesses[guessNumber]}</h3>: <h3 id="final-original-word">{image.info.word.toUpperCase()} BECAME {image.info.guesses[guessNumber-1].toUpperCase()}</h3>}
               </div>
               

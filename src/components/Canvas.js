@@ -1,4 +1,4 @@
-import React, { Component, Fragment, setState } from 'react';
+import React, { Component, Fragment } from 'react';
 import Pusher from 'pusher-js';
 import reactCSS from 'reactcss';
 import eraser from '../images/eraser.png';

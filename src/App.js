@@ -1,7 +1,6 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import './App.css';
 import Canvas from './components/Canvas'
-import Button from './components/Button'
 import HomeScreen from './components/HomeScreen'
 import HostRoom from './components/HostRoom'
 import Waiting from './components/Waiting'
@@ -211,10 +210,10 @@ function App() {
     socket.emit('nextRound', state.gameID, state.round, state.roomID);
   }
   
-  const onButtonClick = () => {
-    canvasData.current.convertToBlob();
-    console.log("statedrawing", state.drawing);
-  };
+  // const onButtonClick = () => {
+  //   canvasData.current.convertToBlob();
+  //   console.log("statedrawing", state.drawing);
+  // };
 
   function convertToImage(blob) {
     const arrayBufferView = new Uint8Array(blob.data);
