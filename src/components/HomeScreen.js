@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import Button from './Button'
-import "./HomeScreen.css";
+import "../styles/HomeScreen.css";
 
 export default function HomeScreen(props) {
 

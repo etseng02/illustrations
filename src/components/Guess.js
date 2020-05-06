@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { statement } from '@babel/template';
 import Button from './Button'
-import './Guess.css';
+import '../styles/Guess.css';
 
 
 export default function Guess(props) {
