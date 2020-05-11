@@ -1,7 +1,7 @@
 import React, { Fragment, useState }  from "react";
 
 import Button from './Button'
-import './Waiting.css'
+import '../styles/Waiting.css'
 
 export default function Waiting(props) {
 

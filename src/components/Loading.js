@@ -1,6 +1,6 @@
 import React, { Fragment }  from "react";
 
-import './Loading.css'
+import '../styles/Loading.css'
 
 export default function Waiting(props) {
 

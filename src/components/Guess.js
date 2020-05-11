@@ -1,25 +1,10 @@
-import React, { Fragment, useState } from 'react';
-import { statement } from '@babel/template';
+import React, { Fragment } from 'react';
 import Button from './Button'
-import './Guess.css';
+import '../styles/Guess.css';
 
 
 export default function Guess(props) {
-
-  // const [guess, setGuess] = useState("");
-
-  console.log("asdasd", props.imageSource);
-
-  // const imageSource = URL.createObjectURL(props.imageSource);
-  // const container = document.getElementById("imageContainer");
-  // const img = new Image();
-  // img.src = imageSource;
-
-  // function delieverGuess(){
-  //   return guess
-  // }
   
-
   return (
     <Fragment>
       <div className="playerGuessStyle">
@@ -38,7 +23,7 @@ export default function Guess(props) {
             }}
           />
           <Button onClick = {() => props.ready()}>Ready</Button>
-          <img src={props.imageSource}></img>
+          <img alt ="guess" src={props.imageSource}></img>
         </div>
     </Fragment>
   )
