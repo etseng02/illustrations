@@ -71,6 +71,18 @@ function App() {
     socket.emit('Ready', state.roomID, state.name);
   }
 
+  function nextRound(data) {
+    console.log("next round command has been sent")
+    socket.emit('nextRound', state.gameID, state.round, state.roomID);
+  }
+
+  function convertToImage(blob) {
+    const arrayBufferView = new Uint8Array(blob.data);
+    const blobData = new Blob([arrayBufferView], { type: "image/png" });
+    const imageUrl = URL.createObjectURL(blobData);
+    return imageUrl;
+  };
+
   //EVENT HANDLERS AND HELPER FUNCTIONS BELOW
 
   useEffect(() => { //Add player name to lobby by adding player to players array in state
@@ -204,23 +216,6 @@ function App() {
       }
   },[state])
   
-  
-  function nextRound(data) {
-    console.log("next round command has been sent")
-    socket.emit('nextRound', state.gameID, state.round, state.roomID);
-  }
-  
-  // const onButtonClick = () => {
-  //   canvasData.current.convertToBlob();
-  //   console.log("statedrawing", state.drawing);
-  // };
-
-  function convertToImage(blob) {
-    const arrayBufferView = new Uint8Array(blob.data);
-    const blobData = new Blob([arrayBufferView], { type: "image/png" });
-    const imageUrl = URL.createObjectURL(blobData);
-    return imageUrl;
-  };
   
   useEffect(()=>{
     if (state.round % 2 === 0 && state.drawing){
@@ -367,10 +362,6 @@ function App() {
       
       </Fragment>
       }
-
-       
-
-
 
     </Fragment>
   );
