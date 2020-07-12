@@ -15,15 +15,18 @@
     "reactcss": "^1.2.3",
     "sentencer": "^0.2.0",
     "socket.io-client": "^2.3.0",
+    "tailwindcss": "^1.4.6",
     "uuid": "^3.3.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "npm run watch:css && react-scripts start",
+    "build": "npm run build:css && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "build:css": "postcss src/assets/tailwind.css -o src/assets/main.css",
+    "watch:css": "postcss src/assets/tailwind.css -o src/assets/main.css"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -48,7 +51,9 @@
     "@storybook/addons": "^5.2.5",
     "@storybook/react": "^5.2.5",
     "@testing-library/jest-dom": "^4.2.0",
-    "@testing-library/react": "^9.3.0"
+    "@testing-library/react": "^9.3.0",
+    "autoprefixer": "^9.8.5",
+    "postcss-cli": "^7.1.1"
   },
   "repository": {
     "type": "git",
