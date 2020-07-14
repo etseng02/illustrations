@@ -1,8 +1,5 @@
 import React, { useState } from "react"
 
-import Button from "./Button"
-import "../styles/HomeScreen.css"
-
 export default function HomeScreen(props) {
   const [name, setName] = useState(props.name || "")
   const [room, setRoom] = useState(props.name || "")
@@ -20,8 +17,8 @@ export default function HomeScreen(props) {
   }
 
   return (
-    <div>
-      <form autoComplete="off">
+    <form autoComplete="off">
+      <div class="flex flex-col bg-gray-200 m-auto mt-16 w-3/5 lg:w-4/12 p-6 space-y-4">
         <input
           id="name-field"
           value={name}
@@ -36,13 +33,13 @@ export default function HomeScreen(props) {
           placeholder="Enter Room ID"
           onChange={event => setRoom(event.target.value)}
         />
-        <Button id="join-room" onClick={() => validate()}>
+        <button id="join-room" onClick={() => validate()}>
           Join Room
-        </Button>
-        <Button id="create-room" onClick={() => props.createRoom()}>
+        </button>
+        <button id="create-room" onClick={() => props.createRoom()}>
           Create Room
-        </Button>
-      </form>
-    </div>
+        </button>
+      </div>
+    </form>
   )
 }

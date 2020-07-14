@@ -1,12 +1,11 @@
-import React, { Fragment, useState }  from "react";
+import React, { Fragment, useState } from "react"
 
-import Button from './Button'
-import '../styles/Waiting.css'
+import Button from "./common/Button"
+import "../styles/Waiting.css"
 
 export default function Waiting(props) {
-
-  const [name] = useState(props.name || "");
-  const [room] = useState(props.room || "");
+  const [name] = useState(props.name || "")
+  const [room] = useState(props.room || "")
 
   return (
     <Fragment>
@@ -14,11 +13,8 @@ export default function Waiting(props) {
         <h1>Name: {name}</h1>
         <h1>Connected to room: {room}</h1>
         <h1>{props.message}</h1>
-        <Button onClick = {() => props.onClick(room, name)}>Ready</Button>
+        <Button onClick={() => props.onClick(room, name)}>Ready</Button>
       </div>
     </Fragment>
-    
-  );
-
-
+  )
 }
